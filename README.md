@@ -1,27 +1,10 @@
-# ALAMAT na MANDIRIGMA (VOLUME 1) — Free Demo
+# ALAMAT na MANDIRIGMA (VOLUME 1) — FREE DEMO
+Original Filipino-inspired arcade fighting game by **Artstrong Javier Clarion** · **LOKAL AFRO FLIP**.
 
-A Philippine mythology-inspired arcade fighting game by **Artstrong Javier Clarion**, part of **LOKAL AFRO FLIP · THE GAME SERIES**.
+**Play online:** https://idrenartstrong.github.io/alamat-mandirigma-free-demo/
 
-**Free demo:** Bagwis vs Bakal on the Manila stage, with original music, single-player versus CPU and local two-player modes. Play from a supported desktop or mobile browser using the on-screen touch controls on phones.
+This public demo contains **Bagwis vs Bakal**, the **Manila stage**, the game's music, solo CPU play and local two-player controls. On iPhone Safari or Android Chrome, open the link, allow the game assets to load, rotate to landscape, and use on-screen controls. Download size is approximately 20 MB.
 
-## Play online
+This repository contains only the demo. The main page (`index.html`) opens `play/`. Its 11 published text files under `play/parts/` reassemble the public demo in the browser. Do not delete or rename any part.
 
-Once GitHub Pages is enabled for this repository, the demo will be at:
-
-**https://idrenartstrong.github.io/alamat-mandirigma-free-demo/**
-
-The site is **not live yet** until the following three demo website files are uploaded and GitHub Pages is enabled.
-
-## Upload the demo website
-
-1. Download and extract the prepared **ALAMAT_MOBILE_DEMO_WEBSITE_UPLOAD.zip** package.
-2. On GitHub, choose **Add file → Upload files**. Drag the extracted `index.html`, `logo.png`, and the **play** folder into the repository root. The gameplay file must end up at **play/index.html**.
-3. Commit the upload.
-4. Open **Settings → Pages → Build and deployment**, select **Deploy from a branch**, branch **main** and folder **/(root)**, and save.
-5. Visit the Pages URL above once the deployment has completed. Test on iPhone Safari, Android Chrome, and desktop Chrome.
-
-**Please do not upload the full paid game or your private license server, activation keys, or original master source here.** This public repository is solely for the free demo.
-
-## Rights
-
-Game, characters, music, and associated creative materials: © Artstrong Javier Clarion. All rights reserved unless otherwise expressly stated. No open-source license is granted by this repository.
+**Rights:** © Artstrong Javier Clarion. All rights reserved. No open-source license is granted. The paid full game, activation backend and private keys must never be uploaded to this public repository.

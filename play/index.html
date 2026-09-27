@@ -1,0 +1,33 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#08152a"><title>ALAMAT na MANDIRIGMA (VOLUME 1) — Free Demo</title>
+<style>*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#071020;color:#ffe6af;font-family:system-ui,sans-serif}main{max-width:620px;padding:8vh 22px;margin:auto;text-align:center}img{max-width:160px;width:35%;height:auto}h1{font-size:clamp(32px,8vw,58px);line-height:1.05;margin:22px 0 8px}p{color:#cbd5e6;line-height:1.5}.bar{margin:28px auto 12px;width:min(100%,400px);height:12px;border:1px solid #af8e51;border-radius:10px;overflow:hidden;background:#17243c}.fill{height:100%;background:linear-gradient(90deg,#b5832e,#ffe1a2);width:0;transition:width .24s}.small{font-size:13px}button{background:#efc779;border:0;padding:12px 23px;border-radius:8px;color:#101827;font-weight:bold}</style>
+</head><body><main><img src="../logo.png" alt="LOKAL AFRO FLIP"><h1>ALAMAT na<br>MANDIRIGMA</h1><h2>VOLUME 1 · FREE DEMO</h2><p id="status" role="status" aria-live="polite">Loading game files…</p><div class="bar"><div class="fill" id="progress"></div></div><p class="small">The game is approximately 20 MB. On your phone, rotate to landscape after loading.</p><div id="error"></div></main>
+<script>
+(async function(){
+ const total=11;
+ let completed=0;
+ const progress=document.getElementById('progress'), status=document.getElementById('status');
+ try {
+  const parts=await Promise.all(Array.from({length:total},async(_,i)=>{
+   const filename='parts/part'+String(i).padStart(2,'0')+'.txt';
+   const response=await fetch(filename);
+   if(!response.ok)throw new Error('Could not load game file '+(i+1)+' ('+response.status+').');
+   const body=await response.text();
+   if(body.length<200000&&i<total-1)throw new Error('Game file '+(i+1)+' is incomplete.');
+   completed++;
+   progress.style.width=(completed/total*100).toFixed(1)+'%';
+   status.textContent='Loading game files… '+completed+'/'+total;
+   return body;
+  }));
+  let html=parts.join('');
+  if(html.length<20000000||!html.includes('FREE DEMO')||!html.includes('</body>'))throw new Error('Game files are incomplete. Please refresh.');
+  const mobileCss="<style id=\"alamat-mobile-extension\">\n@media (hover:none) and (pointer:coarse) and (orientation:landscape) and (max-height:650px){\nbody:has(#fight.active){overflow:hidden;margin:0;background:#061321}\nbody:has(#fight.active) .top,body:has(#fight.active) footer{display:none!important}\n#fight.active{position:relative;display:flex!important;flex-direction:column;align-items:center;justify-content:center;width:100vw;height:100dvh;padding:0 0 max(3px,env(safe-area-inset-bottom));overflow:hidden;gap:0}\n#fight.active .fightHeader{width:min(100vw,calc((100dvh - 24px)*16/9));min-height:22px;padding:1px 6px;flex-shrink:0;background:#081223ed;font-size:10px}\n#fight.active #arenaWrap{width:min(100vw,calc((100dvh - 28px)*16/9));max-width:none;margin:0 auto;border-width:1px;flex-shrink:0}\n#fight.active .touchControls{z-index:10;position:absolute;left:50%;bottom:calc(7px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(98vw,calc((100dvh - 28px)*16/9));max-width:none;margin:0;pointer-events:none;padding:0 6px;display:flex;justify-content:space-between}\n#fight.active .touchControls button{pointer-events:auto;opacity:.95;touch-action:none;min-width:34px;min-height:39px;font-size:10px;border:1px solid #ffdf9acc;box-shadow:0 2px 8px #05080eaa}\n#fight.active .touchControls.second{bottom:calc(52px + env(safe-area-inset-bottom));border:0}\n#fight.active .arcadeKeys{display:none}\n}\n#am-rotate-notice{display:none;position:fixed;inset:0;z-index:20000;background:#060c19f2;color:#ffe9b8;align-items:center;justify-content:center;padding:24px;text-align:center;font:600 16px Arial,sans-serif}\n#am-rotate-notice .am-rotate-card{border:1px solid #d0a85d;background:#101d36;border-radius:20px;max-width:390px;padding:25px;box-shadow:0 12px 50px #0008}\n#am-rotate-notice b{display:block;font-size:26px;margin-bottom:12px;color:#ffd58f}\n#am-rotate-notice button{border:1px solid #edc775;background:#d8aa5a;color:#10172a;padding:11px 16px;border-radius:9px;font-weight:800;margin-top:12px}\n@media (hover:none) and (pointer:coarse) and (orientation:portrait) and (max-width:820px){body:has(#fight.active):not(.am-portrait-ok) #am-rotate-notice{display:flex}}\n</style>";
+  const rotateUi="<div id=\"am-rotate-notice\" role=\"dialog\" aria-modal=\"true\" aria-label=\"Rotate phone\"><div class=\"am-rotate-card\"><div style=\"font-size:48px\">↻</div><b>ROTATE YOUR PHONE</b><p>Turn your iPhone or Android sideways for the fighting arena and touch controls.</p><button type=\"button\" onclick=\"document.body.classList.add('am-portrait-ok')\">PLAY IN PORTRAIT ANYWAY</button></div></div>";
+  html=html.replace('</head>',mobileCss+'</head>').replace('</body>',rotateUi+'</body>');
+  document.open();document.write(html);document.close();
+ }catch(err){
+  status.textContent='The demo could not finish loading.';
+  document.getElementById('error').innerHTML='<p>'+String(err.message).replace(/[<>&]/g,'')+'</p><button onclick="location.reload()">RETRY</button><p class="small">If this keeps happening, ensure your connection is stable and refresh the page.</p>';
+  console.error('ALAMAT demo loader:',err);
+ }
+})();
+</script></body></html>
