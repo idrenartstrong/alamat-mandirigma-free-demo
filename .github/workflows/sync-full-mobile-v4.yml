@@ -1,0 +1,274 @@
+name: Sync ALAMAT Full Mobile v4
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/sync-full-mobile-v4.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  build-full-mobile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download current full mobile build
+        run: |
+          mkdir -p full-mobile-v4
+          curl -L --fail --retry 3 --retry-delay 2 \
+            "https://alamat-full-mobile-beta.idrenartstrong.chatgpt.site/" \
+            -o full-mobile-v4/source.html
+
+      - name: Apply mobile fullscreen v4 patch
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path("full-mobile-v4/source.html")
+          html = p.read_text(encoding="utf-8")
+
+          css = r"""
+<style id="alamat-mobile-fullscreen-v4">
+html,body{overscroll-behavior:none;-webkit-text-size-adjust:100%}
+#amRotate{display:none;position:fixed;inset:0;z-index:99999;background:#071020f5;color:#ffe2a2;font:600 15px/1.5 system-ui,-apple-system,Arial;text-align:center;justify-content:center;align-items:center;padding:calc(env(safe-area-inset-top,0px) + 20px) calc(env(safe-area-inset-right,0px) + 20px) calc(env(safe-area-inset-bottom,0px) + 20px) calc(env(safe-area-inset-left,0px) + 20px)}
+#amRotate .panel{max-width:390px;display:grid;justify-items:center;gap:8px}
+#amRotate .icon{font-size:54px}
+#amRotate h2{font:900 clamp(22px,6vw,32px) system-ui;margin:0;color:#f9dfa1}
+#amRotate p{font:400 14px/1.5 system-ui;color:#dce7f1;margin:0}
+#amRotate button{font:750 13px system-ui;min-height:42px;border:1px solid #d4a858;color:#0b1930;background:#eed098;padding:9px 17px;border-radius:999px;margin-top:12px}
+
+@media (pointer:coarse) and (orientation:portrait) and (max-width:950px){
+  body:not(.amPortraitOverride) #amRotate{display:flex}
+}
+
+@media (pointer:coarse){
+  #touch button,#p2touch button,.touchControls button{
+    touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none
+  }
+}
+
+@media (pointer:coarse) and (orientation:landscape){
+  html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#000}
+  body.amInFight{position:fixed;inset:0;width:100dvw;height:100dvh;overflow:hidden;background:#000}
+  body.amInFight #app{position:fixed;inset:0;width:100dvw;height:100dvh;overflow:hidden;background:#000}
+  body.amInFight .top,body.amInFight .arcadeKeys,body.amInFight footer{display:none!important}
+
+  body.amInFight #fight.screen.active,
+  body.amInFight #fight.active{
+    position:fixed!important;inset:0!important;display:flex!important;
+    align-items:center!important;justify-content:center!important;
+    width:100dvw!important;max-width:none!important;height:100dvh!important;
+    margin:0!important;padding:0!important;overflow:hidden!important;background:#000!important
+  }
+
+  body.amInFight #arenaWrap{
+    position:relative!important;
+    width:min(100dvw,calc(100dvh * 1.7777778))!important;
+    height:min(100dvh,calc(100dvw * .5625))!important;
+    max-width:none!important;margin:auto!important;border:0!important;
+    box-shadow:none!important;overflow:hidden!important;background:#000!important;isolation:isolate
+  }
+
+  body.amInFight #game,body.amInFight canvas{
+    display:block!important;width:100%!important;height:100%!important;
+    max-width:none!important;touch-action:none!important
+  }
+
+  body.amInFight .fightHeader{
+    position:fixed!important;z-index:45!important;
+    left:max(8px,env(safe-area-inset-left,0px))!important;
+    right:max(8px,env(safe-area-inset-right,0px))!important;
+    top:max(5px,env(safe-area-inset-top,0px))!important;
+    padding:0!important;margin:0!important;display:flex!important;
+    align-items:center!important;justify-content:space-between!important;
+    pointer-events:none!important;color:#ffe3aa!important;font-size:9px!important;text-shadow:0 2px 5px #000
+  }
+
+  body.amInFight .fightHeader button,#amFullBtn{
+    pointer-events:auto!important;min-width:40px!important;min-height:40px!important;
+    width:40px!important;height:40px!important;padding:0!important;border-radius:50%!important;
+    border:1px solid #ffe0a3a8!important;background:#07172a8c!important;color:#ffe6b5!important;
+    backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+    box-shadow:0 0 0 1px #0006,0 2px 12px #0009!important
+  }
+
+  #amFullBtn{
+    position:fixed;z-index:46;top:max(5px,env(safe-area-inset-top,0px));
+    right:calc(max(8px,env(safe-area-inset-right,0px)) + 48px);
+    display:grid!important;place-items:center!important;font-size:19px!important;line-height:1
+  }
+
+  #arenaWrap>.touchControls{
+    position:absolute!important;z-index:20!important;left:0!important;right:0!important;
+    bottom:max(9px,env(safe-area-inset-bottom,0px))!important;margin:0!important;
+    padding:0 max(10px,env(safe-area-inset-right,0px)) 0 max(10px,env(safe-area-inset-left,0px))!important;
+    display:flex!important;justify-content:space-between!important;align-items:flex-end!important;
+    gap:12px!important;max-width:none!important;border:0!important;pointer-events:none!important;line-height:1!important
+  }
+
+  #arenaWrap>.touchControls .touchGroup{
+    display:flex!important;gap:clamp(3px,1vw,7px)!important;
+    align-items:center!important;pointer-events:auto!important
+  }
+
+  #arenaWrap>.touchControls button{
+    --ctrl:clamp(44px,11vh,58px);
+    width:var(--ctrl)!important;height:var(--ctrl)!important;
+    min-width:var(--ctrl)!important;min-height:var(--ctrl)!important;
+    max-width:var(--ctrl)!important;max-height:var(--ctrl)!important;
+    aspect-ratio:1/1!important;padding:0 3px!important;border-radius:50%!important;
+    border:1.5px solid rgba(255,224,163,.82)!important;
+    background:rgba(8,26,49,.38)!important;color:rgba(255,255,255,.94)!important;
+    box-shadow:0 0 0 1px rgba(0,0,0,.35),inset 0 0 12px rgba(255,255,255,.05),0 2px 12px rgba(0,0,0,.28)!important;
+    backdrop-filter:blur(2.5px)!important;-webkit-backdrop-filter:blur(2.5px)!important;
+    font:900 clamp(7px,2.1vh,10px)/1 system-ui,-apple-system,sans-serif!important;
+    opacity:.78!important;text-shadow:0 1px 3px #000!important;
+    transition:transform .07s ease,background .07s ease,box-shadow .07s ease,opacity .07s ease!important
+  }
+
+  #arenaWrap>.touchControls .touchGroup:first-child button{
+    border-color:rgba(114,202,255,.9)!important
+  }
+
+  #arenaWrap>.touchControls .attacks button{
+    background:rgba(112,40,36,.34)!important;border-color:rgba(255,192,116,.88)!important
+  }
+
+  #arenaWrap>.touchControls button:active,
+  #arenaWrap>.touchControls button.pressed{
+    transform:scale(.90)!important;opacity:1!important;color:#07101f!important;
+    background:rgba(255,207,100,.96)!important;border-color:#fff1c5!important;
+    box-shadow:0 0 0 2px rgba(255,255,255,.62),0 0 23px rgba(255,190,69,.92),inset 0 0 14px rgba(255,255,255,.55)!important;
+    text-shadow:none!important
+  }
+
+  #arenaWrap>#p2touch{display:none!important}
+  body.amDuo #arenaWrap>#p2touch{
+    display:flex!important;bottom:auto!important;
+    top:max(51px,calc(env(safe-area-inset-top,0px) + 45px))!important;
+    transform:scale(.84);transform-origin:center top;opacity:.8
+  }
+
+  body.amInFight .centerOverlay{z-index:30!important;padding:15px}
+}
+
+@media (pointer:coarse) and (orientation:landscape) and (max-height:380px){
+  #arenaWrap>.touchControls button{--ctrl:42px}
+}
+</style>
+"""
+
+          ui = r"""
+<aside id="amRotate" aria-label="Rotate phone">
+  <section class="panel">
+    <div class="icon">↻ 📱</div>
+    <h2>ROTATE TO LANDSCAPE</h2>
+    <p>Turn your phone sideways for the full battle screen.</p>
+    <button id="amRotateDismiss" type="button">PLAY IN PORTRAIT ANYWAY</button>
+  </section>
+</aside>
+<button id="amFullBtn" type="button" aria-label="Fullscreen" title="Fullscreen">⛶</button>
+"""
+
+          js = r"""
+<script id="alamat-mobile-fullscreen-v4-js">
+(function(){
+  const $=id=>document.getElementById(id);
+  const touch=()=>matchMedia('(pointer:coarse)').matches||navigator.maxTouchPoints>0;
+  const landscape=()=>innerWidth>innerHeight;
+
+  async function immersive(){
+    try{
+      if(!document.fullscreenElement&&document.documentElement.requestFullscreen){
+        await document.documentElement.requestFullscreen({navigationUI:'hide'});
+      }
+    }catch(e){}
+    try{
+      if(screen.orientation&&screen.orientation.lock){
+        await screen.orientation.lock('landscape');
+      }
+    }catch(e){}
+    setTimeout(()=>{try{scrollTo(0,1)}catch(e){}},50);
+  }
+
+  function moveControls(){
+    const arena=$('arenaWrap'),p1=$('touch'),p2=$('p2touch');
+    if(!arena)return;
+    if(p1&&p1.parentElement!==arena)arena.appendChild(p1);
+    if(p2&&p2.parentElement!==arena)arena.appendChild(p2);
+  }
+
+  function sync(){
+    const fight=$('fight');
+    const fighting=!!(fight&&fight.classList.contains('active'));
+    document.body.classList.toggle('amInFight',fighting);
+    const mode=($('fightMode')&&$('fightMode').textContent)||'';
+    document.body.classList.toggle('amDuo',fighting&&/2 PLAYER/i.test(mode));
+    const fb=$('amFullBtn');
+    if(fb)fb.style.display=(fighting&&touch()&&landscape())?'grid':'none';
+    if(fighting&&touch()&&landscape()){
+      moveControls();
+      setTimeout(()=>{try{scrollTo(0,1)}catch(e){}},30);
+    }
+  }
+
+  function init(){
+    moveControls();
+    const d=$('amRotateDismiss');
+    if(d)d.onclick=()=>document.body.classList.add('amPortraitOverride');
+    const f=$('amFullBtn');
+    if(f)f.onclick=immersive;
+
+    document.addEventListener('pointerdown',e=>{
+      const b=e.target.closest&&e.target.closest('#arenaWrap .touchControls button');
+      if(!b)return;
+      b.classList.add('pressed');
+    },true);
+    document.addEventListener('pointerup',e=>{
+      document.querySelectorAll('#arenaWrap .touchControls button.pressed').forEach(b=>b.classList.remove('pressed'));
+    },true);
+    document.addEventListener('pointercancel',e=>{
+      document.querySelectorAll('#arenaWrap .touchControls button.pressed').forEach(b=>b.classList.remove('pressed'));
+    },true);
+
+    new MutationObserver(sync).observe(document.body,{subtree:true,attributes:true,attributeFilter:['class','style']});
+    addEventListener('orientationchange',()=>setTimeout(sync,120));
+    addEventListener('resize',()=>setTimeout(sync,40),{passive:true});
+    sync();
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
+  else init();
+})();
+</script>
+"""
+
+          if "alamat-mobile-fullscreen-v4" not in html:
+              if "</head>" in html:
+                  html = html.replace("</head>", css + "</head>", 1)
+              else:
+                  html = css + html
+              if "</body>" in html:
+                  html = html.replace("</body>", ui + js + "</body>", 1)
+              else:
+                  html += ui + js
+
+          Path("full-mobile-v4/index.html").write_text(html, encoding="utf-8")
+          Path("full-mobile-v4/.nojekyll").write_text("", encoding="utf-8")
+          print("Built full-mobile-v4/index.html", len(html), "bytes")
+
+      - name: Commit generated full mobile preview
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add full-mobile-v4/index.html full-mobile-v4/.nojekyll
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Sync full ALAMAT mobile v4 preview"
+            git push
+          fi
