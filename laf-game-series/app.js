@@ -33,5 +33,52 @@ async function loadLibrary(){const items=$('#libraryItems');items.innerHTML='<p>
 function escapeHtml(v){return String(v??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 async function downloadGame(slug,button){const session=await currentSession();if(!session)return openAuth();button.disabled=true;const old=button.textContent;button.textContent='CREATING LINK…';try{const res=await fetch(SUPABASE_URL+'/functions/v1/create-download-link',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_KEY},body:JSON.stringify({game_slug:slug})});const j=await res.json();if(!res.ok)throw new Error(j.error||'Download unavailable.');location.href=j.download_url}catch(e){alert(e.message)}finally{button.disabled=false;button.textContent=old}}
 $('#buyPaymongo')?.addEventListener('click',async()=>{const session=await currentSession();if(!session){openAuth();return}if(!session.user.email_confirmed_at){alert('Please verify your email before purchasing.');return}const b=$('#buyPaymongo');b.disabled=true;const old=b.textContent;b.textContent='OPENING SECURE CHECKOUT…';try{const res=await fetch(SUPABASE_URL+'/functions/v1/create-paymongo-checkout',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_KEY},body:JSON.stringify({game_slug:'alamat-na-mandirigma-volume-1'})});const j=await res.json();if(!res.ok)throw new Error(j.error||'Checkout unavailable.');location.href=j.checkout_url}catch(e){alert(e.message)}finally{b.disabled=false;b.textContent=old}});
+
+$('#buyPaypal')?.addEventListener('click',async()=>{
+  const session=await currentSession();
+  if(!session){openAuth();return}
+  if(!session.user.email_confirmed_at){alert('Please verify your email before purchasing.');return}
+  const b=$('#buyPaypal');b.disabled=true;const old=b.textContent;b.textContent='OPENING PAYPAL SANDBOX…';
+  try{
+    const res=await fetch(SUPABASE_URL+'/functions/v1/create-paypal-order',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_KEY},
+      body:JSON.stringify({game_slug:'alamat-na-mandirigma-volume-1'})
+    });
+    const j=await res.json();
+    if(!res.ok)throw new Error(j.error||'PayPal checkout unavailable.');
+    location.href=j.checkout_url;
+  }catch(e){alert(e.message)}
+  finally{b.disabled=false;b.textContent=old}
+});
+
 sb.auth.onAuthStateChange(()=>setTimeout(refreshAccount,0));refreshAccount();
-const qs=new URLSearchParams(location.search);if(qs.get('payment')==='success'){setTimeout(async()=>{document.querySelector('#library')?.scrollIntoView({behavior:'smooth'});for(let i=0;i<8;i++){await refreshAccount();await new Promise(r=>setTimeout(r,1800))}},500)}else if(qs.get('payment')==='cancelled'){setTimeout(()=>document.querySelector('#store')?.scrollIntoView({behavior:'smooth'}),300)}
+const qs=new URLSearchParams(location.search);
+if(qs.get('paypal_test')==='1')$('#buyPaypal')?.classList.remove('hidden');
+if(qs.get('paypal')==='return'){
+  setTimeout(async()=>{
+    const session=await currentSession();
+    const paypalOrderId=qs.get('token');
+    if(!session||!paypalOrderId){alert('PayPal return could not be completed. Please sign in again.');return}
+    const status=$('#purchaseStatus');status.textContent='Confirming PayPal Sandbox payment…';
+    try{
+      const res=await fetch(SUPABASE_URL+'/functions/v1/capture-paypal-order',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_KEY},
+        body:JSON.stringify({paypal_order_id:paypalOrderId})
+      });
+      const j=await res.json();
+      if(!res.ok)throw new Error(j.error||'PayPal payment could not be confirmed.');
+      status.textContent='PayPal Sandbox payment confirmed. The game is now in My Library.';
+      await refreshAccount();
+      document.querySelector('#library')?.scrollIntoView({behavior:'smooth'});
+      history.replaceState({},'',location.pathname+'#library');
+    }catch(e){status.textContent=e.message||'PayPal payment confirmation failed.';alert(status.textContent)}
+  },500);
+}else if(qs.get('paypal')==='cancel'){
+  setTimeout(()=>{document.querySelector('#store')?.scrollIntoView({behavior:'smooth'});history.replaceState({},'',location.pathname+'#store')},300);
+}else if(qs.get('payment')==='success'){
+  setTimeout(async()=>{document.querySelector('#library')?.scrollIntoView({behavior:'smooth'});for(let i=0;i<8;i++){await refreshAccount();await new Promise(r=>setTimeout(r,1800))}},500)
+}else if(qs.get('payment')==='cancelled'){
+  setTimeout(()=>document.querySelector('#store')?.scrollIntoView({behavior:'smooth'}),300)
+}
