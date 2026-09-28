@@ -58,8 +58,12 @@ if(qs.get('paypal_test')==='1')$('#buyPaypal')?.classList.remove('hidden');
 if(qs.get('paypal')==='return'){
   setTimeout(async()=>{
     const session=await currentSession();
-    const paypalOrderId=qs.get('token');
-    if(!session||!paypalOrderId){alert('PayPal return could not be completed. Please sign in again.');return}
+    const hashRaw=(location.hash||'').replace(/^#/,'');
+    const hashParts=hashRaw.includes('&')?hashRaw.slice(hashRaw.indexOf('&')+1):hashRaw;
+    const hashParams=new URLSearchParams(hashParts);
+    const paypalOrderId=qs.get('token')||hashParams.get('token');
+    if(!session){alert('PayPal payment was approved, but your store session is no longer active. Please sign in again, then reload this page to finish the Sandbox capture.');return}
+    if(!paypalOrderId){alert('PayPal returned without an order token. The checkout return link has now been fixed; please retry the Sandbox test.');return}
     const status=$('#purchaseStatus');status.textContent='Confirming PayPal Sandbox payment…';
     try{
       const res=await fetch(SUPABASE_URL+'/functions/v1/capture-paypal-order',{
