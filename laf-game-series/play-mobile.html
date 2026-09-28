@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#15130f">
+  <title>Play ALAMAT na MANDIRIGMA — Mobile</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <style>
+    body{min-height:100svh;display:grid;place-items:center;padding:20px}
+    .play-shell{width:min(760px,100%);background:var(--cream);border:1px solid var(--line);padding:clamp(26px,5vw,52px);box-shadow:0 24px 70px #2f271b24}
+    .play-shell h1{font-family:Georgia,serif;font-size:clamp(38px,7vw,70px);line-height:.95;margin:10px 0 18px}
+    .play-shell p{line-height:1.6;color:var(--muted)}
+    .play-actions{display:grid;gap:10px;margin-top:24px}
+    .play-actions .btn{width:100%}
+    .progress-wrap{margin-top:22px}
+    .progress-track{height:10px;background:#e5dac4;overflow:hidden;border:1px solid var(--line)}
+    .progress-bar{height:100%;width:0;background:var(--ink);transition:width .15s linear}
+    .play-status{min-height:46px;font-size:13px;margin-top:10px;color:var(--muted)}
+    .play-note{font-size:12px;border-left:3px solid var(--gold);padding-left:12px}
+  </style>
+</head>
+<body>
+  <main class="play-shell">
+    <p class="eyebrow">OWNED MOBILE GAME</p>
+    <h1>ALAMAT na MANDIRIGMA</h1>
+    <p><strong>VOLUME 1 · FULL MOBILE GAME</strong></p>
+    <p id="accountText">Checking your game license…</p>
+    <p class="play-note">For the best experience, use Safari on iPhone/iPad or Chrome on Android, rotate your phone to landscape, then use the game's fullscreen control.</p>
+    <div class="progress-wrap hidden" id="progressWrap">
+      <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+      <div class="play-status" id="status">Preparing secure game session…</div>
+    </div>
+    <div class="play-actions">
+      <button class="btn primary" id="playBtn" disabled>PLAY FULL MOBILE GAME</button>
+      <a class="btn ghost" href="index.html#library">BACK TO MY LIBRARY</a>
+    </div>
+  </main>
+
+<script>
+const SUPABASE_URL="https://bnbddwrpbumbinuvzouv.supabase.co";
+const SUPABASE_KEY="sb_publishable_W1XZHNiYWijmdx4e_XrM5g_viSBjrii";
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const playBtn=document.getElementById('playBtn');
+const accountText=document.getElementById('accountText');
+const statusEl=document.getElementById('status');
+const progressWrap=document.getElementById('progressWrap');
+const progressBar=document.getElementById('progressBar');
+
+function setProgress(p,text){
+  progressWrap.classList.remove('hidden');
+  progressBar.style.width=Math.max(2,Math.min(100,p))+'%';
+  if(text)statusEl.textContent=text;
+}
+async function session(){
+  const {data}=await sb.auth.getSession();
+  return data.session||null;
+}
+async function init(){
+  const s=await session();
+  if(!s){
+    accountText.textContent='Please sign in to your LOKAL AFRO FLIP account first.';
+    playBtn.disabled=true;
+    playBtn.textContent='SIGN IN FROM MY LIBRARY';
+    playBtn.onclick=()=>location.href='index.html#library';
+    return;
+  }
+  accountText.textContent='Signed in as '+(s.user.email||'player')+'. Your ownership will be checked before the game loads.';
+  playBtn.disabled=false;
+}
+async function fetchWithProgress(url){
+  const res=await fetch(url,{cache:'no-store'});
+  if(!res.ok)throw new Error('Could not load the protected mobile build.');
+  const total=Number(res.headers.get('content-length')||0);
+  if(!res.body){
+    const buf=await res.arrayBuffer();
+    setProgress(70,'Game package downloaded. Opening…');
+    return new Uint8Array(buf);
+  }
+  const reader=res.body.getReader();
+  const chunks=[];
+  let received=0;
+  for(;;){
+    const {done,value}=await reader.read();
+    if(done)break;
+    chunks.push(value);received+=value.length;
+    if(total)setProgress(10+(received/total)*55,'Downloading secure mobile game… '+Math.round((received/total)*100)+'%');
+    else setProgress(35,'Downloading secure mobile game…');
+  }
+  const bytes=new Uint8Array(received);
+  let pos=0;
+  for(const chunk of chunks){bytes.set(chunk,pos);pos+=chunk.length}
+  return bytes;
+}
+playBtn.addEventListener('click',async()=>{
+  playBtn.disabled=true;
+  const old=playBtn.textContent;
+  playBtn.textContent='LOADING FULL GAME…';
+  try{
+    const s=await session();
+    if(!s)throw new Error('Your store session expired. Please sign in again from My Library.');
+    setProgress(5,'Verifying ownership…');
+    const res=await fetch(SUPABASE_URL+'/functions/v1/create-download-link',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer '+s.access_token,
+        'apikey':SUPABASE_KEY
+      },
+      body:JSON.stringify({game_slug:'alamat-na-mandirigma-volume-1',platform:'mobile_play'})
+    });
+    const j=await res.json();
+    if(!res.ok)throw new Error(j.error||'Your mobile game access could not be verified.');
+    setProgress(10,'Ownership verified. Loading protected game package…');
+    const bytes=await fetchWithProgress(j.download_url);
+    setProgress(68,'Preparing the full game…');
+    const zip=await JSZip.loadAsync(bytes);
+    const entry=zip.file('ALAMAT_NA_MANDIRIGMA_VOLUME_1_MOBILE.html') || Object.values(zip.files).find(f=>!f.dir && /\.html$/i.test(f.name));
+    if(!entry)throw new Error('The mobile game file is missing from the package.');
+    const gameBlob=await entry.async('blob',meta=>{
+      setProgress(68+(meta.percent*.28),'Preparing full game… '+Math.round(meta.percent)+'%');
+    });
+    const htmlBlob=new Blob([gameBlob],{type:'text/html'});
+    const gameUrl=URL.createObjectURL(htmlBlob);
+    setProgress(100,'Ready. Launching ALAMAT na MANDIRIGMA…');
+    setTimeout(()=>location.replace(gameUrl),250);
+  }catch(e){
+    console.error(e);
+    statusEl.textContent=e.message||'Could not start the mobile game.';
+    progressBar.style.width='0%';
+    playBtn.disabled=false;
+    playBtn.textContent=old;
+  }
+});
+init();
+</script>
+</body>
+</html>
