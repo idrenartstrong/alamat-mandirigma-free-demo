@@ -7,6 +7,7 @@
   <title>LOKAL AFRO FLIP GAME SERIES</title>
   <meta name="description" content="Official home of LOKAL AFRO FLIP GAME SERIES — original games, demos, releases and direct purchases." />
   <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
   <div class="pattern pattern-a"></div>
@@ -56,15 +57,15 @@
     </section>
 
     <section class="section" id="store">
-      <div class="section-head"><div><p class="eyebrow">OFFICIAL DIRECT STORE</p><h2>Buy Direct</h2></div><p>This storefront shell is ready for payment integration. Checkout buttons stay disabled until merchant accounts and secure server verification are connected.</p></div>
+      <div class="section-head"><div><p class="eyebrow">OFFICIAL DIRECT STORE</p><h2>Buy Direct</h2></div><p>Purchase securely through your verified customer account. Philippine checkout is powered by PayMongo Hosted Checkout; payment confirmation is verified by the server before access is granted.</p></div>
       <div class="store-grid">
-        <div class="product-card"><img src="assets/game-icon.jpg?v=3" alt="ALAMAT game icon"><div><span class="tag">FULL GAME</span><h3>ALAMAT na MANDIRIGMA · Volume 1</h3><p>Digital game license + future build updates through your account library.</p></div><div class="price">PRICE TBA</div><a class="btn primary" href="https://alamat-full-mobile-beta.idrenartstrong.chatgpt.site/" target="_blank" rel="noreferrer">OPEN FULL MOBILE GAME</a></div>
-        <div class="checkout-box"><h3>Planned payment methods</h3><div class="pay-grid"><div>PayPal<small>International</small></div><div>GCash<small>Philippines</small></div><div>Maya<small>Philippines</small></div><div>Visa / Mastercard<small>Cards</small></div><div>Online Banking<small>Local banks</small></div><div>QR Payment<small>Optional</small></div></div><p class="security">Payment success must be verified on the server before a download is unlocked. Full commercial files should never live at an open public URL.</p></div>
+        <div class="product-card"><img src="assets/alamat-hero.jpg?v=6" alt="ALAMAT na MANDIRIGMA character select artwork"><div><span class="tag">FULL GAME</span><h3>ALAMAT na MANDIRIGMA · Volume 1</h3><p>Digital game license + future build updates through your account library.</p></div><div class="price">₱499 <small>/ $8.99 reference</small></div><button class="btn primary" id="buyPaymongo">BUY NOW — PAYMONGO</button><p class="purchase-note" id="purchaseStatus">Sign in with a verified email to purchase.</p></div>
+        <div class="checkout-box"><h3>Secure payment methods</h3><div class="pay-grid"><div class="pay-active">PayMongo Hosted Checkout<small>Secure checkout</small></div><div>GCash<small>When active on merchant account</small></div><div>Maya<small>When active on merchant account</small></div><div>Visa / Mastercard<small>Cards</small></div><div>QR Ph<small>Philippines</small></div><div>Online Banking<small>Pending channel activation</small></div><div>PayPal<small>International · next integration</small></div></div><p class="security">Checkout is created on the secure server. A game is added to My Library only after PayMongo sends a verified payment webhook. Commercial game files remain private.</p></div>
       </div>
     </section>
 
     <section class="section dark" id="library">
-      <div class="library-card"><div><p class="eyebrow">CUSTOMER ACCOUNT</p><h2>My Library</h2><p>Customers will sign in here to see purchased games, download the latest build, access beta versions and retrieve receipts.</p></div><button class="btn ghost" disabled>SIGN IN — BACKEND PENDING</button></div>
+      <div class="library-card" id="libraryCard"><div><p class="eyebrow">CUSTOMER ACCOUNT</p><h2>My Library</h2><p id="libraryIntro">Sign in to see your purchased games and create protected download links.</p><div id="libraryItems" class="library-items"></div></div><div class="library-actions"><button class="btn ghost" id="accountBtn">SIGN IN / CREATE ACCOUNT</button><button class="btn ghost hidden" id="signOutBtn">SIGN OUT</button></div></div>
     </section>
 
     <section class="section" id="about">
@@ -72,7 +73,8 @@
     </section>
   </main>
 
-  <footer><div class="brand"><span class="brand-mark">LAF</span><span><strong>LOKAL AFRO FLIP</strong><small>GAME SERIES</small></span></div><p>Official game distribution portal · © <span id="year"></span> LOKAL AFRO FLIP</p></footer>
-  <script src="app.js"></script>
+  <footer><div class="brand"><span class="brand-mark logo-mark"><img src="../logo.png" alt="LOKAL AFRO FLIP logo"></span><span><strong>LOKAL AFRO FLIP</strong><small>GAME SERIES</small></span></div><div class="footer-links"><a href="business.html">Business</a><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a><a href="refund.html">Refunds</a><a href="contact.html">Contact</a></div><p>Official game distribution portal · © <span id="year"></span> LOKAL AFRO FLIP</p></footer>
+  <dialog id="authDialog" class="auth-dialog"><div class="auth-shell"><button class="dialog-close" id="authClose" aria-label="Close">×</button><p class="eyebrow">PLAYER ACCOUNT</p><h2 id="authTitle">Sign In</h2><div class="auth-tabs"><button class="auth-tab active" data-mode="signin">SIGN IN</button><button class="auth-tab" data-mode="signup">CREATE ACCOUNT</button></div><form id="authForm"><label>Email<input id="authEmail" type="email" autocomplete="email" required></label><label>Password<input id="authPassword" type="password" minlength="8" autocomplete="current-password" required></label><label id="nameField" class="hidden">Display name<input id="authName" type="text" maxlength="80"></label><button class="btn primary" id="authSubmit" type="submit">SIGN IN</button></form><p id="authMessage" class="auth-message"></p><p class="auth-small">New accounts must verify their email before purchasing.</p></div></dialog>
+  <script src="app.js?v=6"></script>
 </body>
 </html>
