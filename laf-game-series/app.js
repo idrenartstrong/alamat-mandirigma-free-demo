@@ -1,25 +1,58 @@
 const SUPABASE_URL="https://bnbddwrpbumbinuvzouv.supabase.co";
 const SUPABASE_KEY="sb_publishable_W1XZHNiYWijmdx4e_XrM5g_viSBjrii";
+const STORE_URL=location.origin+location.pathname;
 const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const menu=document.getElementById('menu'),nav=document.getElementById('nav');
 menu?.addEventListener('click',()=>nav.classList.toggle('open'));
 nav?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
 document.getElementById('year').textContent=new Date().getFullYear();
-const $=s=>document.querySelector(s);const authDialog=$('#authDialog');let authMode='signin';
+const $=s=>document.querySelector(s);const authDialog=$('#authDialog'),resetDialog=$('#resetDialog');let authMode='signin';
 function msg(el,text,type=''){if(!el)return;el.textContent=text;el.className=(el.id==='authMessage'?'auth-message ':'status-box ')+type}
-function setAuthMode(mode){authMode=mode;document.querySelectorAll('.auth-tab').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));$('#authTitle').textContent=mode==='signup'?'Create Account':'Sign In';$('#authSubmit').textContent=mode==='signup'?'CREATE ACCOUNT':'SIGN IN';$('#nameField').classList.toggle('hidden',mode!=='signup');$('#authPassword').autocomplete=mode==='signup'?'new-password':'current-password';$('#resendConfirmBtn')?.classList.add('hidden');msg($('#authMessage'),'')}
+function setAuthMode(mode){authMode=mode;document.querySelectorAll('.auth-tab').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));$('#authTitle').textContent=mode==='signup'?'Create Account':'Sign In';$('#authSubmit').textContent=mode==='signup'?'CREATE ACCOUNT':'SIGN IN';$('#nameField').classList.toggle('hidden',mode!=='signup');$('#authPassword').autocomplete=mode==='signup'?'new-password':'current-password';$('#forgotPasswordBtn')?.classList.toggle('hidden',mode!=='signin');$('#resendConfirmBtn')?.classList.add('hidden');msg($('#authMessage'),'')}
 $('.auth-tabs')?.addEventListener('click',e=>{const b=e.target.closest('[data-mode]');if(b)setAuthMode(b.dataset.mode)});
 $('#authClose')?.addEventListener('click',()=>authDialog.close());
 function openAuth(){setAuthMode('signin');authDialog.showModal()}
 $('#accountBtn')?.addEventListener('click',openAuth);
-$('#authForm')?.addEventListener('submit',async e=>{e.preventDefault();const email=$('#authEmail').value.trim(),password=$('#authPassword').value,name=$('#authName').value.trim();$('#authSubmit').disabled=true;try{if(authMode==='signup'){const {data,error}=await sb.auth.signUp({email,password,options:{data:{display_name:name},emailRedirectTo:'https://idrenartstrong.github.io/alamat-mandirigma-free-demo/laf-game-series/'}});if(error)throw error;msg($('#authMessage'),data.session?'Account created and signed in.':'Account created. Check your email and verify it before purchasing.','ok');if(!data.session)$('#resendConfirmBtn')?.classList.remove('hidden');if(data.session)setTimeout(()=>authDialog.close(),700)}else{const {error}=await sb.auth.signInWithPassword({email,password});if(error)throw error;msg($('#authMessage'),'Signed in.','ok');setTimeout(()=>authDialog.close(),450)}}catch(err){msg($('#authMessage'),err.message||'Account request failed.','err')}finally{$('#authSubmit').disabled=false;await refreshAccount()}});
+
+$('#forgotPasswordBtn')?.addEventListener('click',async()=>{
+  const email=$('#authEmail').value.trim();
+  if(!email){msg($('#authMessage'),'Enter your email first, then choose Forgot Password.','err');$('#authEmail').focus();return}
+  const b=$('#forgotPasswordBtn');b.disabled=true;const old=b.textContent;b.textContent='SENDING RESET EMAIL…';
+  try{
+    const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:STORE_URL});
+    if(error)throw error;
+    msg($('#authMessage'),'Password reset email sent. Check Inbox, Spam, and Promotions.','ok');
+  }catch(err){msg($('#authMessage'),err.message||'Could not send password reset email.','err')}
+  finally{b.disabled=false;b.textContent=old}
+});
+
+function openResetDialog(){
+  if(authDialog?.open)authDialog.close();
+  if(resetDialog&&!resetDialog.open){msg($('#resetMessage'),'');resetDialog.showModal()}
+}
+$('#resetClose')?.addEventListener('click',()=>resetDialog.close());
+$('#resetForm')?.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const password=$('#resetPassword').value,confirm=$('#resetPasswordConfirm').value;
+  if(password!==confirm){msg($('#resetMessage'),'Passwords do not match.','err');return}
+  const b=$('#resetSubmit');b.disabled=true;const old=b.textContent;b.textContent='SAVING…';
+  try{
+    const {error}=await sb.auth.updateUser({password});
+    if(error)throw error;
+    msg($('#resetMessage'),'Password updated successfully. Your account is ready.','ok');
+    history.replaceState({},'',location.pathname+location.search);
+    setTimeout(()=>resetDialog.close(),900);
+  }catch(err){msg($('#resetMessage'),err.message||'Could not update password.','err')}
+  finally{b.disabled=false;b.textContent=old;await refreshAccount()}
+});
+$('#authForm')?.addEventListener('submit',async e=>{e.preventDefault();const email=$('#authEmail').value.trim(),password=$('#authPassword').value,name=$('#authName').value.trim();$('#authSubmit').disabled=true;try{if(authMode==='signup'){const {data,error}=await sb.auth.signUp({email,password,options:{data:{display_name:name},emailRedirectTo:STORE_URL}});if(error)throw error;msg($('#authMessage'),data.session?'Account created and signed in.':'Account created. Check your email and verify it before purchasing.','ok');if(!data.session)$('#resendConfirmBtn')?.classList.remove('hidden');if(data.session)setTimeout(()=>authDialog.close(),700)}else{const {error}=await sb.auth.signInWithPassword({email,password});if(error)throw error;msg($('#authMessage'),'Signed in.','ok');setTimeout(()=>authDialog.close(),450)}}catch(err){msg($('#authMessage'),err.message||'Account request failed.','err')}finally{$('#authSubmit').disabled=false;await refreshAccount()}});
 
 $('#resendConfirmBtn')?.addEventListener('click',async()=>{
   const email=$('#authEmail').value.trim();
   if(!email){msg($('#authMessage'),'Enter your email first.','err');return}
   const b=$('#resendConfirmBtn');b.disabled=true;const old=b.textContent;b.textContent='SENDING…';
   try{
-    const {error}=await sb.auth.resend({type:'signup',email,options:{emailRedirectTo:'https://idrenartstrong.github.io/alamat-mandirigma-free-demo/laf-game-series/'}});
+    const {error}=await sb.auth.resend({type:'signup',email,options:{emailRedirectTo:STORE_URL}});
     if(error)throw error;
     msg($('#authMessage'),'Verification email sent again. Check Inbox, Spam, and Promotions.','ok');
   }catch(err){msg($('#authMessage'),err.message||'Could not resend verification email.','err')}
@@ -52,7 +85,7 @@ $('#buyPaypal')?.addEventListener('click',async()=>{
   finally{b.disabled=false;b.textContent=old}
 });
 
-sb.auth.onAuthStateChange(()=>setTimeout(refreshAccount,0));refreshAccount();
+sb.auth.onAuthStateChange((event)=>{if(event==='PASSWORD_RECOVERY')setTimeout(openResetDialog,0);setTimeout(refreshAccount,0)});refreshAccount();if((location.hash||'').includes('type=recovery'))setTimeout(openResetDialog,350);
 const qs=new URLSearchParams(location.search);
 if(qs.get('paypal_test')==='1')$('#buyPaypal')?.classList.remove('hidden');
 if(qs.get('paypal')==='return'){
