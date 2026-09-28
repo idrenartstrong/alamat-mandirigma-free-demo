@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>ALAMAT na MANDIRIGMA — Mobile Fullscreen Preview v3</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#071020;color:#ffe6af;font-family:system-ui,-apple-system,sans-serif}
+main{max-width:620px;padding:8vh 22px;margin:auto;text-align:center}img{max-width:160px;width:35%;height:auto}
+h1{font-size:clamp(32px,8vw,58px);line-height:1.05;margin:22px 0 8px}p{color:#cbd5e6;line-height:1.5}
+.bar{margin:28px auto 12px;width:min(100%,400px);height:12px;border:1px solid #af8e51;border-radius:10px;overflow:hidden;background:#17243c}
+.fill{height:100%;background:linear-gradient(90deg,#b5832e,#ffe1a2);width:0;transition:width .24s}.small{font-size:13px}
+button{background:#efc779;border:0;padding:12px 23px;border-radius:999px;color:#101827;font-weight:bold}
+</style>
+</head>
+<body>
+<main>
+<img src="../logo.png" alt="LOKAL AFRO FLIP">
+<h1>ALAMAT na<br>MANDIRIGMA</h1>
+<h2>MOBILE FULLSCREEN PREVIEW · v3</h2>
+<p id="status" role="status" aria-live="polite">Loading the playable preview…</p>
+<div class="bar"><div class="fill" id="progress"></div></div>
+<p class="small">About 20 MB. On iPhone or Android, rotate your phone to landscape after loading.</p>
+<div id="error"></div>
+</main>
+<script>
+(async function(){
+ const total=11, progress=document.getElementById('progress'), status=document.getElementById('status');
+ let completed=0;
+ try{
+  const parts=await Promise.all(Array.from({length:total},async(_,i)=>{
+   const filename='../play/parts/part'+String(i).padStart(2,'0')+'.txt';
+   const r=await fetch(filename,{cache:'no-store'});
+   if(!r.ok) throw new Error('Could not load game file '+(i+1)+' ('+r.status+').');
+   const body=await r.text();
+   completed++; progress.style.width=(completed/total*100).toFixed(1)+'%';
+   status.textContent='Loading game files… '+completed+'/'+total;
+   return body;
+  }));
+  let html=parts.join('');
+  if(html.length<20000000 || !html.includes('</body>')) throw new Error('Game files are incomplete. Please refresh.');
+
+  const mobileCss = `
+<style id="alamat-mobile-fullscreen-v3">
+html,body{overscroll-behavior:none;-webkit-text-size-adjust:100%}
+#amRotate{display:none;position:fixed;inset:0;z-index:99999;background:linear-gradient(150deg,#08152b 0%,#152f4c 70%,#34270f 100%);color:#ffe2a2;font:600 15px/1.5 system-ui,-apple-system,Arial;text-align:center;justify-content:center;align-items:center;padding:calc(env(safe-area-inset-top,0px) + 20px) calc(env(safe-area-inset-right,0px) + 20px) calc(env(safe-area-inset-bottom,0px) + 20px) calc(env(safe-area-inset-left,0px) + 20px)}
+#amRotate .panel{max-width:390px;display:grid;justify-items:center;gap:8px}#amRotate .icon{font-size:54px}#amRotate h2{font:900 clamp(22px,6vw,32px) system-ui;margin:0;color:#f9dfa1}#amRotate p{font:400 14px/1.5 system-ui;color:#dce7f1;margin:0}
+#amRotate button{font:750 13px system-ui;min-height:42px;border:1px solid #d4a858;color:#0b1930;background:#eed098;padding:9px 17px;border-radius:999px;margin-top:12px}
+@media (pointer:coarse) and (orientation:portrait) and (max-width:950px){body:not(.amPortraitOverride) #amRotate{display:flex}}
+@media (pointer:coarse){#touch button,#p2touch button,.touchControls button{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}}
+@media (pointer:coarse) and (orientation:landscape){
+ html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#000}
+ body.amInFight{position:fixed;inset:0;width:100dvw;height:100dvh;overflow:hidden;background:#000}
+ body.amInFight #app{position:fixed;inset:0;width:100dvw;height:100dvh;overflow:hidden;background:#000}
+ body.amInFight .top,body.amInFight .arcadeKeys,body.amInFight footer{display:none!important}
+ body.amInFight #fight.screen.active{position:fixed!important;inset:0!important;display:flex!important;align-items:center!important;justify-content:center!important;width:100dvw!important;max-width:none!important;height:100dvh!important;margin:0!important;padding:0!important;overflow:hidden!important;background:#000!important}
+ body.amInFight #arenaWrap{position:relative!important;width:min(100dvw,calc(100dvh * 1.7777778))!important;height:min(100dvh,calc(100dvw * .5625))!important;max-width:none!important;margin:auto!important;border:0!important;box-shadow:none!important;overflow:hidden!important;background:#000!important;isolation:isolate}
+ body.amInFight #game{display:block!important;width:100%!important;height:100%!important;max-width:none!important;touch-action:none!important}
+ body.amInFight .fightHeader{position:fixed!important;z-index:45!important;left:max(8px,env(safe-area-inset-left,0px))!important;right:max(8px,env(safe-area-inset-right,0px))!important;top:max(5px,env(safe-area-inset-top,0px))!important;padding:0!important;margin:0!important;display:flex!important;align-items:center!important;justify-content:space-between!important;pointer-events:none!important;color:#ffe3aa!important;font-size:9px!important;text-shadow:0 2px 5px #000}
+ body.amInFight .fightHeader #stageLabel{position:absolute;left:50%;transform:translateX(-50%);max-width:50vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:#07132380;border:1px solid #c89c5960;border-radius:999px;padding:5px 10px;backdrop-filter:blur(3px)}
+ body.amInFight .fightHeader #fightMode{display:none!important}
+ body.amInFight .fightHeader button,#amFullBtn{pointer-events:auto!important;min-width:40px!important;min-height:40px!important;width:40px!important;height:40px!important;padding:0!important;border-radius:50%!important;border:1px solid #ffe0a3a8!important;background:#07172a8c!important;color:#ffe6b5!important;backdrop-filter:blur(4px);box-shadow:0 0 0 1px #0006,0 2px 12px #0009!important;font-size:0!important}
+ body.amInFight #fightExit::before{content:'✕';font-size:18px}body.amInFight #pauseBtn::before{content:'Ⅱ';font-size:16px}
+ #amFullBtn{position:fixed;z-index:46;top:max(5px,env(safe-area-inset-top,0px));right:calc(max(8px,env(safe-area-inset-right,0px)) + 48px);display:grid!important;place-items:center!important;font-size:19px!important;line-height:1}
+ #arenaWrap>.touchControls{position:absolute!important;z-index:20!important;left:0!important;right:0!important;bottom:max(9px,env(safe-area-inset-bottom,0px))!important;margin:0!important;padding:0 max(10px,env(safe-area-inset-right,0px)) 0 max(10px,env(safe-area-inset-left,0px))!important;display:flex!important;justify-content:space-between!important;align-items:flex-end!important;gap:12px!important;max-width:none!important;border:0!important;pointer-events:none!important;line-height:1!important}
+ #arenaWrap>.touchControls .touchGroup{display:flex!important;gap:clamp(3px,1vw,7px)!important;align-items:center!important;pointer-events:auto!important}
+ #arenaWrap>.touchControls button{--ctrl:clamp(44px,11vh,58px);width:var(--ctrl)!important;height:var(--ctrl)!important;min-width:var(--ctrl)!important;min-height:var(--ctrl)!important;max-width:var(--ctrl)!important;max-height:var(--ctrl)!important;aspect-ratio:1/1!important;padding:0 3px!important;border-radius:50%!important;border:1.5px solid rgba(255,224,163,.82)!important;background:rgba(8,26,49,.38)!important;color:rgba(255,255,255,.94)!important;box-shadow:0 0 0 1px rgba(0,0,0,.35),inset 0 0 12px rgba(255,255,255,.05),0 2px 12px rgba(0,0,0,.28)!important;backdrop-filter:blur(2.5px)!important;-webkit-backdrop-filter:blur(2.5px)!important;font:900 clamp(7px,2.1vh,10px)/1 system-ui,-apple-system,sans-serif!important;opacity:.78!important;text-shadow:0 1px 3px #000!important;transition:transform .07s ease,background .07s ease,box-shadow .07s ease,opacity .07s ease!important}
+ #arenaWrap>.touchControls .touchGroup:first-child button{border-color:rgba(114,202,255,.9)!important;box-shadow:0 0 0 1px rgba(0,0,0,.3),0 0 10px rgba(58,164,255,.18)!important}
+ #arenaWrap>.touchControls .attacks button{background:rgba(112,40,36,.34)!important;border-color:rgba(255,192,116,.88)!important;box-shadow:0 0 0 1px rgba(0,0,0,.32),0 0 10px rgba(255,130,63,.18)!important}
+ #arenaWrap>.touchControls button:active,#arenaWrap>.touchControls button.pressed{transform:scale(.90)!important;opacity:1!important;color:#07101f!important;background:rgba(255,207,100,.96)!important;border-color:#fff1c5!important;box-shadow:0 0 0 2px rgba(255,255,255,.62),0 0 23px rgba(255,190,69,.92),inset 0 0 14px rgba(255,255,255,.55)!important;text-shadow:none!important}
+ #arenaWrap>#p2touch{display:none!important}
+ body.amDuo #arenaWrap>#p2touch{display:flex!important;bottom:auto!important;top:max(51px,calc(env(safe-area-inset-top,0px) + 45px))!important;transform:scale(.84);transform-origin:center top;opacity:.8}
+ body.amInFight .centerOverlay{z-index:30!important;padding:15px}
+}
+@media (pointer:coarse) and (orientation:landscape) and (max-height:380px){#arenaWrap>.touchControls button{--ctrl:42px}body.amInFight .fightHeader #stageLabel{display:none}}
+</style>`;
+
+  const mobileUi = '<aside id="amRotate" aria-label="Rotate phone"><section class="panel"><div class="icon">↻ 📱</div><h2>ROTATE TO LANDSCAPE</h2><p>Turn your phone sideways for the full battle screen. On iPhone, Add to Home Screen gives the cleanest fullscreen experience.</p><button id="amRotateDismiss" type="button">PLAY IN PORTRAIT ANYWAY</button></section></aside><button id="amFullBtn" type="button" aria-label="Fullscreen" title="Fullscreen">⛶</button>';
+
+  const mobileJs = `
+<script>
+(function(){
+ const $=id=>document.getElementById(id);
+ const touch=()=>matchMedia('(pointer:coarse)').matches||navigator.maxTouchPoints>0;
+ const landscape=()=>innerWidth>innerHeight;
+ async function immersive(){
+  try{if(!document.fullscreenElement&&document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen({navigationUI:'hide'});}catch(e){}
+  try{if(screen.orientation&&screen.orientation.lock)await screen.orientation.lock('landscape');}catch(e){}
+  setTimeout(function(){try{scrollTo(0,1)}catch(e){}},50);
+ }
+ function moveControls(){
+  const arena=$('arenaWrap'),p1=$('touch'),p2=$('p2touch');if(!arena||!p1||!p2)return;
+  if(p1.parentElement!==arena)arena.appendChild(p1);if(p2.parentElement!==arena)arena.appendChild(p2);
+ }
+ function sync(){
+  const fighting=!!($('fight')&&$('fight').classList.contains('active'));
+  document.body.classList.toggle('amInFight',fighting);
+  const mode=($('fightMode')&&$('fightMode').textContent)||'';
+  document.body.classList.toggle('amDuo',fighting&&/2 PLAYER/i.test(mode));
+  const fb=$('amFullBtn');if(fb)fb.style.display=(fighting&&touch()&&landscape())?'grid':'none';
+  if(fighting&&touch()&&landscape()){moveControls();setTimeout(function(){try{scrollTo(0,1)}catch(e){}},30)}
+ }
+ function init(){
+  moveControls();
+  const d=$('amRotateDismiss');if(d)d.onclick=function(){document.body.classList.add('amPortraitOverride')};
+  const f=$('amFullBtn');if(f)f.onclick=immersive;
+  const s=$('startBtn');if(s)s.addEventListener('click',function(){if(touch())immersive()},{capture:true});
+  new MutationObserver(sync).observe(document.body,{subtree:true,attributes:true,attributeFilter:['class','style']});
+  addEventListener('orientationchange',function(){setTimeout(sync,120)});
+  addEventListener('resize',function(){setTimeout(sync,40)},{passive:true});
+  document.addEventListener('pointerdown',function(e){if(e.target.closest&&e.target.closest('#arenaWrap .touchControls button'))immersive()},{once:true,capture:true});
+  sync();
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+</script>`;
+
+  html=html.replace('</head>',mobileCss+'</head>').replace('</body>',mobileUi+mobileJs+'</body>');
+  document.open();document.write(html);document.close();
+ }catch(err){
+  status.textContent='The preview could not finish loading.';
+  document.getElementById('error').innerHTML='<p>'+String(err.message).replace(/[<>&]/g,'')+'</p><button onclick="location.reload()">RETRY</button>';
+  console.error(err);
+ }
+})();
+</script>
+</body>
+</html>
