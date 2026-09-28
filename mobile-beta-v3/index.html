@@ -116,7 +116,7 @@ html,body{overscroll-behavior:none;-webkit-text-size-adjust:100%}
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
-</script>`;
+<\/script>`;
 
   html=html.replace('</head>',mobileCss+'</head>').replace('</body>',mobileUi+mobileJs+'</body>');
   document.open();document.write(html);document.close();
