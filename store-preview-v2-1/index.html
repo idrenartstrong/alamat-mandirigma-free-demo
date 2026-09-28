@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#17130c">
+<title>LOKAL AFRO FLIP GAME SERIES — V2.1 Preview</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="grain"></div>
+<header class="topbar">
+  <a class="brand" href="#home"><span class="brand-logo-crop"><img src="../logo.png" alt="LOKAL AFRO FLIP logo"></span><span><strong>LOKAL AFRO FLIP</strong><small>GAME SERIES</small></span></a>
+  <nav id="nav"><a href="#games">Games</a><a href="#store">Store</a><a href="#library">My Library</a><a href="#about">About</a></nav>
+  <div class="account-actions"><button class="tiny ghost" id="accountBtn">SIGN IN</button><button class="menu" id="menu">☰</button></div>
+</header>
+
+<main id="home">
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow">ORIGINAL GAMES · FILIPINO STORIES · GLOBAL PLAY</div>
+    <h1>LOKAL AFRO FLIP<br><span>GAME SERIES</span></h1>
+    <p class="lead">The official direct home for our game worlds — play demos, buy releases, receive updates, and keep every purchase in one account.</p>
+    <div class="actions"><a class="btn primary" href="#store">BUY DIRECT</a><a class="btn secondary" href="../play/" target="_blank">PLAY FREE DEMO</a></div>
+    <div class="method-row"><span>CHECKOUT</span><b>PayPal</b><b>GCash</b><b>Maya</b><b>Cards</b><b>Online Banking</b></div>
+  </div>
+  <article class="cover-card">
+    <div class="cover-art"><div class="cover-symbol">⚔</div><div class="cover-title">ALAMAT<br><span>na MANDIRIGMA</span></div></div>
+    <div class="cover-copy"><span class="badge">FEATURED RELEASE</span><h2>ALAMAT na MANDIRIGMA</h2><p>VOLUME 1</p></div>
+  </article>
+</section>
+
+<section class="section" id="games">
+  <div class="section-head"><div><span class="eyebrow">CATALOG</span><h2>Our Games</h2></div><p>This storefront is built to grow from Volume 1 into a full LOKAL AFRO FLIP game catalog.</p></div>
+  <div class="game-layout">
+    <article class="game-panel"><div class="game-icon">⚔</div><div><span class="badge">AVAILABLE FOR DIRECT PURCHASE</span><h3>ALAMAT na MANDIRIGMA · Volume 1</h3><p>Philippine-inspired arcade fighting with legendary warriors, powers, stage progression and local versus play.</p><div class="chips"><span>Fighting</span><span>Arcade</span><span>Local VS</span><span>PC / Mobile Beta</span></div></div></article>
+    <article class="future"><b>02</b><h3>Next Game</h3><p>Reserved for the next title in the series.</p></article>
+    <article class="future"><b>03</b><h3>Future Release</h3><p>DLC, bundles and new releases can be added without rebuilding the store.</p></article>
+  </div>
+</section>
+
+<section class="section store-section" id="store">
+  <div class="section-head"><div><span class="eyebrow">DIRECT STORE</span><h2>Buy From the Creator</h2></div><p>Choose a payment method. V2.1 preview uses simulated checkout only.</p></div>
+  <div class="purchase-shell">
+    <article class="purchase-card">
+      <div class="purchase-top"><div class="game-icon small">⚔</div><div><span class="badge">DIGITAL LICENSE</span><h3>ALAMAT na MANDIRIGMA · Volume 1</h3><p>Full game + future build updates through My Library.</p></div></div>
+      <div class="price-row"><div><small>PHILIPPINES</small><strong>₱499</strong></div><div><small>INTERNATIONAL</small><strong>$8.99</strong></div></div>
+      <p class="editable-price-note">Editable defaults: <b>₱499 / $8.99</b> — update <code>ALAMAT_PRICE_PHP</code> and <code>ALAMAT_PRICE_USD</code> in <code>.env</code> before launch.</p>
+      <div class="checkout-actions"><button class="pay paypal" data-pay="PayPal">PAY WITH PAYPAL</button><button class="pay ph" data-pay="GCash / Maya / Card / Bank">GCASH / MAYA / CARD / BANK</button></div>
+      <p class="fine">Preview only — no money will be charged.</p>
+    </article>
+    <aside class="secure-card"><span class="shield">◆</span><h3>Protected delivery</h3><ol><li>Customer signs in.</li><li>Checkout starts on the server.</li><li>Payment provider confirms payment.</li><li>Purchase entitlement is granted.</li><li>My Library creates a short-lived download link.</li></ol><div class="status"><span></span><b>Preview mode — payments are simulated</b></div></aside>
+  </div>
+</section>
+
+<section class="section dark" id="library">
+  <div class="library-head"><div><span class="eyebrow">CUSTOMER ACCOUNT</span><h2>My Library</h2><p>Your purchased games, receipts and secure downloads appear here.</p></div><button class="btn secondary" id="librarySignIn">SIGN IN / CREATE ACCOUNT</button></div>
+  <div class="library-grid" id="libraryGrid"><article class="empty"><h3>No account loaded</h3><p>Sign in to preview your purchase library.</p></article></div>
+</section>
+
+<section class="section" id="about">
+  <div class="about-grid"><div><span class="eyebrow">THE LABEL</span><h2>LOKAL AFRO FLIP GAME SERIES</h2><p>A direct distribution platform for original games under the LOKAL AFRO FLIP creative brand.</p><blockquote>“Built from Culture. Made for Players.”</blockquote></div><div class="stack"><h3>V2.1 includes</h3><p>✓ Account architecture<br>✓ PayPal integration structure<br>✓ PayMongo checkout structure<br>✓ Mock checkout preview<br>✓ My Library entitlement flow<br>✓ Protected downloads architecture<br>✓ Admin foundation<br>✓ Editable ₱499 / $8.99 defaults</p></div></div>
+</section>
+</main>
+
+<footer><div class="brand"><span class="brand-logo-crop footer-logo"><img src="../logo.png" alt="LOKAL AFRO FLIP logo"></span><span><strong>LOKAL AFRO FLIP</strong><small>GAME SERIES</small></span></div><p>© 2026 LOKAL AFRO FLIP · Official direct game distribution portal</p></footer>
+
+<dialog id="previewDialog" class="modal"><div class="modal-card"><button class="close" id="closeDialog">×</button><span class="eyebrow">V2.1 PREVIEW</span><h2 id="dialogTitle">Preview</h2><p id="dialogText"></p><div id="dialogArea"></div></div></dialog>
+
+<script>
+const $=s=>document.querySelector(s);
+$('#menu').onclick=()=>$('#nav').classList.toggle('open');
+const d=$('#previewDialog');
+function show(title,text,html=''){ $('#dialogTitle').textContent=title; $('#dialogText').textContent=text; $('#dialogArea').innerHTML=html; d.showModal(); }
+$('#closeDialog').onclick=()=>d.close();
+$('#accountBtn').onclick=()=>show('Player Account','This static preview demonstrates the V2.1 design. Live sign-in becomes active with the V3 production backend.','<button class="btn primary" onclick="previewAccount()">PREVIEW ACCOUNT</button>');
+$('#librarySignIn').onclick=$('#accountBtn').onclick;
+window.previewAccount=()=>{d.close();$('#accountBtn').textContent='MY ACCOUNT';$('#librarySignIn').textContent='SIGNED IN (PREVIEW)';$('#libraryGrid').innerHTML='<article class="library-item"><div class="game-icon">⚔</div><h3>ALAMAT na MANDIRIGMA · Volume 1</h3><p>Preview entitlement</p><button class="btn">CREATE DOWNLOAD LINK</button></article>';};
+document.querySelectorAll('[data-pay]').forEach(b=>b.onclick=()=>show(b.dataset.pay+' Checkout','Safe preview only — no money will be charged.','<div class="mock-box"><b>₱499 / $8.99</b><p>This demonstrates the checkout step before real PayPal / PayMongo credentials are connected.</p><button class="btn primary" onclick="previewBuy()">SIMULATE SUCCESSFUL PAYMENT</button></div>'));
+window.previewBuy=()=>{d.close();previewAccount();document.querySelector('#library').scrollIntoView({behavior:'smooth'});};
+</script>
+</body>
+</html>
