@@ -7,12 +7,25 @@ nav?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classLi
 document.getElementById('year').textContent=new Date().getFullYear();
 const $=s=>document.querySelector(s);const authDialog=$('#authDialog');let authMode='signin';
 function msg(el,text,type=''){if(!el)return;el.textContent=text;el.className=(el.id==='authMessage'?'auth-message ':'status-box ')+type}
-function setAuthMode(mode){authMode=mode;document.querySelectorAll('.auth-tab').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));$('#authTitle').textContent=mode==='signup'?'Create Account':'Sign In';$('#authSubmit').textContent=mode==='signup'?'CREATE ACCOUNT':'SIGN IN';$('#nameField').classList.toggle('hidden',mode!=='signup');$('#authPassword').autocomplete=mode==='signup'?'new-password':'current-password';msg($('#authMessage'),'')}
+function setAuthMode(mode){authMode=mode;document.querySelectorAll('.auth-tab').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));$('#authTitle').textContent=mode==='signup'?'Create Account':'Sign In';$('#authSubmit').textContent=mode==='signup'?'CREATE ACCOUNT':'SIGN IN';$('#nameField').classList.toggle('hidden',mode!=='signup');$('#authPassword').autocomplete=mode==='signup'?'new-password':'current-password';$('#resendConfirmBtn')?.classList.add('hidden');msg($('#authMessage'),'')}
 $('.auth-tabs')?.addEventListener('click',e=>{const b=e.target.closest('[data-mode]');if(b)setAuthMode(b.dataset.mode)});
 $('#authClose')?.addEventListener('click',()=>authDialog.close());
 function openAuth(){setAuthMode('signin');authDialog.showModal()}
 $('#accountBtn')?.addEventListener('click',openAuth);
-$('#authForm')?.addEventListener('submit',async e=>{e.preventDefault();const email=$('#authEmail').value.trim(),password=$('#authPassword').value,name=$('#authName').value.trim();$('#authSubmit').disabled=true;try{if(authMode==='signup'){const {data,error}=await sb.auth.signUp({email,password,options:{data:{display_name:name},emailRedirectTo:'https://idrenartstrong.github.io/alamat-mandirigma-free-demo/laf-game-series/#library'}});if(error)throw error;msg($('#authMessage'),data.session?'Account created and signed in.':'Account created. Check your email and verify it before purchasing.','ok');if(data.session)setTimeout(()=>authDialog.close(),700)}else{const {error}=await sb.auth.signInWithPassword({email,password});if(error)throw error;msg($('#authMessage'),'Signed in.','ok');setTimeout(()=>authDialog.close(),450)}}catch(err){msg($('#authMessage'),err.message||'Account request failed.','err')}finally{$('#authSubmit').disabled=false;await refreshAccount()}});
+$('#authForm')?.addEventListener('submit',async e=>{e.preventDefault();const email=$('#authEmail').value.trim(),password=$('#authPassword').value,name=$('#authName').value.trim();$('#authSubmit').disabled=true;try{if(authMode==='signup'){const {data,error}=await sb.auth.signUp({email,password,options:{data:{display_name:name},emailRedirectTo:'https://idrenartstrong.github.io/alamat-mandirigma-free-demo/laf-game-series/#library'}});if(error)throw error;msg($('#authMessage'),data.session?'Account created and signed in.':'Account created. Check your email and verify it before purchasing.','ok');if(!data.session)$('#resendConfirmBtn')?.classList.remove('hidden');if(data.session)setTimeout(()=>authDialog.close(),700)}else{const {error}=await sb.auth.signInWithPassword({email,password});if(error)throw error;msg($('#authMessage'),'Signed in.','ok');setTimeout(()=>authDialog.close(),450)}}catch(err){msg($('#authMessage'),err.message||'Account request failed.','err')}finally{$('#authSubmit').disabled=false;await refreshAccount()}});
+
+$('#resendConfirmBtn')?.addEventListener('click',async()=>{
+  const email=$('#authEmail').value.trim();
+  if(!email){msg($('#authMessage'),'Enter your email first.','err');return}
+  const b=$('#resendConfirmBtn');b.disabled=true;const old=b.textContent;b.textContent='SENDING…';
+  try{
+    const {error}=await sb.auth.resend({type:'signup',email,options:{emailRedirectTo:'https://idrenartstrong.github.io/alamat-mandirigma-free-demo/laf-game-series/#library'}});
+    if(error)throw error;
+    msg($('#authMessage'),'Verification email sent again. Check Inbox, Spam, and Promotions.','ok');
+  }catch(err){msg($('#authMessage'),err.message||'Could not resend verification email.','err')}
+  finally{b.disabled=false;b.textContent=old}
+});
+
 $('#signOutBtn')?.addEventListener('click',async()=>{await sb.auth.signOut();await refreshAccount()});
 async function currentSession(){const {data}=await sb.auth.getSession();return data.session||null}
 async function refreshAccount(){const session=await currentSession(),accountBtn=$('#accountBtn'),signOut=$('#signOutBtn'),intro=$('#libraryIntro'),items=$('#libraryItems'),status=$('#purchaseStatus');if(!session){accountBtn.textContent='SIGN IN / CREATE ACCOUNT';signOut.classList.add('hidden');intro.textContent='Sign in to see your purchased games and create protected download links.';items.innerHTML='';status.textContent='Sign in with a verified email to purchase.';return}accountBtn.textContent=session.user.email||'MY ACCOUNT';signOut.classList.remove('hidden');const verified=!!session.user.email_confirmed_at;status.textContent=verified?'Your verified account is ready for secure checkout.':'Verify your email before purchasing.';intro.textContent='Signed in as '+(session.user.email||'player')+'.';await loadLibrary()}
