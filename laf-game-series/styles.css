@@ -24,3 +24,21 @@
 .store-poster{width:100%;aspect-ratio:1400/788;margin:0 0 22px 0;background-size:cover}
 .game-card>.catalog-poster{min-width:0}
 @media(max-width:900px){.catalog-poster{min-height:280px}.poster-art::after{font-size:clamp(14px,4vw,28px)}}
+
+
+/* FINAL POSTER OVERLAY OFF */
+.poster-art::before,
+.poster-art::after{
+  content:none !important;
+  display:none !important;
+}
+.poster-art,
+.hero-image,
+.catalog-poster,
+.store-poster{
+  background-image:url('assets/alamat-hero.jpg?v=10') !important;
+  background-size:cover !important;
+  background-position:center !important;
+  background-repeat:no-repeat !important;
+  filter:none !important;
+}
