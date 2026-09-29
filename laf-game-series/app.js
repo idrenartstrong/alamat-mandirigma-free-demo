@@ -64,8 +64,60 @@ async function currentSession(){const {data}=await sb.auth.getSession();return d
 async function refreshAccount(){const session=await currentSession(),accountBtn=$('#accountBtn'),signOut=$('#signOutBtn'),intro=$('#libraryIntro'),items=$('#libraryItems'),status=$('#purchaseStatus');if(!session){accountBtn.textContent='SIGN IN / CREATE ACCOUNT';signOut.classList.add('hidden');intro.textContent='Sign in to see your purchased games and create protected download links.';items.innerHTML='';status.textContent='Sign in with a verified email to purchase.';return}accountBtn.textContent=session.user.email||'MY ACCOUNT';signOut.classList.remove('hidden');const verified=!!session.user.email_confirmed_at;status.textContent=verified?'Your verified account is ready for secure checkout.':'Verify your email before purchasing.';intro.textContent='Signed in as '+(session.user.email||'player')+'.';await loadLibrary()}
 async function loadLibrary(){const items=$('#libraryItems');items.innerHTML='<p>Loading library…</p>';const {data,error}=await sb.from('entitlements').select('id,status,granted_at,games(id,slug,title,edition)').eq('status','active').order('granted_at',{ascending:false});if(error){items.innerHTML='<p>Could not load your library.</p>';return}if(!data?.length){items.innerHTML='<p>No purchased games yet. Complete a verified checkout and the game will appear here automatically.</p>';return}items.innerHTML=data.map(row=>{const g=Array.isArray(row.games)?row.games[0]:row.games;const slug=escapeHtml(g?.slug||'');const downloads=g?.slug==='alamat-na-mandirigma-volume-1'?'<div class="library-actions"><button class="btn ghost download-btn" data-slug="'+slug+'" data-platform="pc_mac">DOWNLOAD PC / MAC</button><a class="btn ghost" href="play-mobile.html">PLAY MOBILE</a></div>':'<button class="btn ghost download-btn" data-slug="'+slug+'">CREATE SECURE DOWNLOAD</button>';return '<article class="library-item"><h3>'+escapeHtml(g?.title||'Game')+' '+escapeHtml(g?.edition||'')+'</h3><p>Owned · Secure digital license</p>'+downloads+'</article>'}).join('');items.querySelectorAll('.download-btn').forEach(b=>b.addEventListener('click',()=>downloadGame(b.dataset.slug,b.dataset.platform||'',b)))}
 function escapeHtml(v){return String(v??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+let paymongoOpening=false,paymongoAvailable=true;
+async function refreshPaymentMethods(){
+  try{
+    const res=await fetch(SUPABASE_URL+'/functions/v1/paymongo-payment-methods',{
+      headers:{apikey:SUPABASE_KEY},signal:AbortSignal.timeout(10000)
+    });
+    if(!res.ok)return;
+    const data=await res.json();
+    if(!Array.isArray(data.payment_method_types)||!data.payment_method_types.every(m=>typeof m==='string'))return;
+    const methods=new Set(data.payment_method_types),cards=[];
+    const qr=methods.has('qrph'),gcash=methods.has('gcash');
+    if(gcash)cards.push(['GCash','Pay directly at checkout']);
+    else if(qr)cards.push(['GCash','Scan to pay with QR Ph']);
+    if(methods.has('paymaya'))cards.push(['Maya','Pay directly at checkout']);
+    else if(qr)cards.push(['Maya','Scan to pay with QR Ph']);
+    if(methods.has('card'))cards.push(['Visa / Mastercard','Credit and debit cards']);
+    if(qr)cards.push(['QR Ph','Participating banks and e-wallets']);
+    const available=data.livemode===true&&cards.length>0;
+    paymongoAvailable=available;
+    $('#paymentMethodsTitle').textContent=available&&(gcash||qr)?'Pay with GCash':'Secure payment methods';
+    $('#paymentMethods').innerHTML=available?cards.map(([name,note])=>'<div class="pay-active">'+escapeHtml(name)+'<small>'+escapeHtml(note)+'</small></div>').join(''):'<div>Payments temporarily unavailable<small>Please try again later.</small></div>';
+    $('#paymentStrip').innerHTML='<span>SECURE PAYMENT</span>'+(available?cards.map(([name,note])=>'<b>'+escapeHtml(name+(note.includes('Scan')?' via QR Ph':''))+'</b>').join(''):'<b>Checkout temporarily unavailable</b>');
+    $('#gcashQrHelp').hidden=!available||!qr;
+    $('#paymentMethodNote').textContent=!available?'Checkout is temporarily unavailable.':gcash?'Choose GCash on the secure PayMongo checkout page.':qr?'Choose QR Ph on the PayMongo checkout page to pay using GCash.':'Choose an available payment method on the secure PayMongo checkout page.';
+    const button=$('#buyPaymongo');
+    if(paymongoOpening)return;
+    button.disabled=!available;
+    button.textContent=!available?'CHECKOUT TEMPORARILY UNAVAILABLE':gcash?'BUY NOW — GCASH / PAYMONGO':qr?'BUY NOW — GCASH / QR PH':'BUY NOW — PAYMONGO';
+  }catch{/* Keep the working QR Ph option if the status check is unavailable. */}
+}
+refreshPaymentMethods();
 async function downloadGame(slug,platform,button){const session=await currentSession();if(!session)return openAuth();button.disabled=true;const old=button.textContent;button.textContent='CREATING LINK…';try{const res=await fetch(SUPABASE_URL+'/functions/v1/create-download-link',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_KEY},body:JSON.stringify({game_slug:slug,platform})});const j=await res.json();if(!res.ok)throw new Error(j.error||'Download unavailable.');location.href=j.download_url}catch(e){alert(e.message)}finally{button.disabled=false;button.textContent=old}}
-$('#buyPaymongo')?.addEventListener('click',async()=>{const session=await currentSession();if(!session){openAuth();return}if(!session.user.email_confirmed_at){alert('Please verify your email before purchasing.');return}const b=$('#buyPaymongo');b.disabled=true;const old=b.textContent;b.textContent='OPENING SECURE CHECKOUT…';try{const res=await fetch(SUPABASE_URL+'/functions/v1/create-paymongo-checkout',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_KEY},body:JSON.stringify({game_slug:'alamat-na-mandirigma-volume-1'})});const j=await res.json();if(!res.ok)throw new Error(j.error||'Checkout unavailable.');location.href=j.checkout_url}catch(e){alert(e.message)}finally{b.disabled=false;b.textContent=old}});
+$('#buyPaymongo')?.addEventListener('click',async()=>{
+  if(paymongoOpening||!paymongoAvailable)return;
+  const session=await currentSession(),status=$('#purchaseStatus');
+  if(!session){openAuth();return}
+  if(!session.user.email_confirmed_at){status.textContent='Please verify your email before purchasing.';return}
+  const b=$('#buyPaymongo');paymongoOpening=true;b.disabled=true;const old=b.textContent;
+  b.textContent='OPENING SECURE CHECKOUT…';status.classList.remove('err');
+  status.textContent='Opening your secure payment page…';
+  try{
+    const res=await fetch(SUPABASE_URL+'/functions/v1/create-paymongo-checkout',{
+      method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_KEY},
+      body:JSON.stringify({game_slug:'alamat-na-mandirigma-volume-1'})
+    });
+    const j=await res.json();
+    if(!res.ok)throw new Error(j.error||'Checkout is temporarily unavailable. Please try again.');
+    if(!j.checkout_url)throw new Error('The payment page did not open. Please try again.');
+    const target=new URL(j.checkout_url,location.href);
+    if(target.protocol!=='https:'||(!j.already_owned&&target.hostname!=='checkout.paymongo.com')||(j.already_owned&&target.origin!==location.origin))throw new Error('The payment page could not be verified. Please try again.');
+    location.href=target.href;
+  }catch(e){status.textContent=e.message||'Checkout is temporarily unavailable. Please try again.';status.classList.add('err')}
+  finally{paymongoOpening=false;b.disabled=!paymongoAvailable;b.textContent=paymongoAvailable?old:'CHECKOUT TEMPORARILY UNAVAILABLE'}
+});
 
 $('#buyPaypal')?.addEventListener('click',async()=>{
   const session=await currentSession();

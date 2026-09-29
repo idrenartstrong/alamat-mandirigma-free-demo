@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#15130f" />
   <title>LOKAL AFRO FLIP GAME SERIES</title>
   <meta name="description" content="Official home of LOKAL AFRO FLIP GAME SERIES — original games, demos, releases and direct purchases." />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=gcash1" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -31,7 +31,7 @@
         <h1>LOKAL AFRO FLIP<br><span>GAME SERIES</span></h1>
         <p class="lead">A direct home for our game worlds — discover new titles, play demos, buy official releases, and keep your purchases in one place.</p>
         <div class="cta-row"><a class="btn primary" href="#games">EXPLORE GAMES</a><a class="btn ghost" href="#store">VISIT STORE</a></div>
-        <div class="pay-strip"><span>DIRECT CHECKOUT READY FOR</span><b>PayPal</b><b>GCash</b><b>Maya</b><b>Cards</b><b>Online Banking</b></div>
+        <div class="pay-strip" id="paymentStrip"><span>SECURE PAYMENT</span><b>GCash via QR Ph</b><b>Maya via QR Ph</b><b>QR Ph</b></div>
       </div>
       <div class="hero-card">
         <div class="hero-image" role="img" aria-label="ALAMAT na MANDIRIGMA game artwork"></div>
@@ -57,10 +57,19 @@
     </section>
 
     <section class="section" id="store">
-      <div class="section-head"><div><p class="eyebrow">OFFICIAL DIRECT STORE</p><h2>Buy Direct</h2></div><p>Purchase securely through your verified customer account. Philippine checkout is powered by PayMongo Hosted Checkout; payment confirmation is verified by the server before access is granted.</p></div>
+      <div class="section-head"><div><p class="eyebrow">OFFICIAL DIRECT STORE</p><h2>Buy Direct</h2></div><p>Pay with GCash or another QR Ph app through secure PayMongo checkout. Sign in with your verified email, complete payment, then open your game in My Library.</p></div>
       <div class="store-grid">
-        <div class="product-card"><img src="assets/alamat-hero.jpg?v=6" alt="ALAMAT na MANDIRIGMA character select artwork"><div><span class="tag">FULL GAME</span><h3>ALAMAT na MANDIRIGMA · Volume 1</h3><p>Digital game license + future build updates through your account library.</p></div><div class="price">₱499 <small>/ $8.99 reference</small></div><div class="store-buy-actions"><button class="btn primary" id="buyPaymongo">BUY NOW — PAYMONGO</button><button class="btn ghost hidden" id="buyPaypal">TEST PAYPAL — SANDBOX</button></div><p class="purchase-note" id="purchaseStatus">Sign in with a verified email to purchase.</p></div>
-        <div class="checkout-box"><h3>Secure payment methods</h3><div class="pay-grid"><div class="pay-active">PayMongo Hosted Checkout<small>Secure checkout</small></div><div>GCash<small>When active on merchant account</small></div><div>Maya<small>When active on merchant account</small></div><div>Visa / Mastercard<small>Cards</small></div><div>QR Ph<small>Philippines</small></div><div>Online Banking<small>Pending channel activation</small></div><div>PayPal<small>International · sandbox testing</small></div></div><p class="security">Checkout is created on the secure server. A game is added to My Library only after PayMongo sends a verified payment webhook. Commercial game files remain private.</p></div>
+        <div class="product-card"><img src="assets/alamat-hero.jpg?v=6" alt="ALAMAT na MANDIRIGMA character select artwork"><div><span class="tag">FULL GAME</span><h3>ALAMAT na MANDIRIGMA · Volume 1</h3><p>Digital game license + future build updates through your account library.</p></div><div class="price">₱499 <small>/ $8.99 reference</small></div><div class="store-buy-actions"><button class="btn primary" id="buyPaymongo">BUY NOW — GCASH / QR PH</button><button class="btn ghost hidden" id="buyPaypal">TEST PAYPAL — SANDBOX</button></div><p class="purchase-note" id="purchaseStatus" role="status" aria-live="polite">Sign in with a verified email to purchase.</p></div>
+        <div class="checkout-box">
+          <h3 id="paymentMethodsTitle">Pay with GCash</h3>
+          <div class="pay-grid" id="paymentMethods"><div class="pay-active">GCash<small>Scan to pay with QR Ph</small></div><div>QR Ph<small>Maya and participating banks</small></div></div>
+          <p class="payment-method-note" id="paymentMethodNote">Choose QR Ph on the PayMongo checkout page to pay using GCash.</p>
+          <div class="payment-help" id="gcashQrHelp">
+            <h4>How to pay using GCash</h4>
+            <ol><li>Click <strong>Buy Now</strong> and choose <strong>QR Ph</strong> at checkout.</li><li>Open <strong>GCash</strong>, tap <strong>QR</strong> and scan the checkout code. On the same phone, save the code and use the QR scanner’s upload option if available.</li><li>Check the merchant and <strong>₱499</strong> amount, then confirm your payment.</li><li>Return to this store and open <strong>My Library</strong> after payment is confirmed.</li></ol>
+          </div>
+          <p class="security">Your game unlocks after payment is confirmed. Use the QR code from your checkout so the payment is linked to your order.</p>
+        </div>
       </div>
     </section>
 
@@ -76,6 +85,6 @@
   <footer><div class="brand"><span class="brand-mark logo-mark"><img src="../logo.png" alt="LOKAL AFRO FLIP logo"></span><span><strong>LOKAL AFRO FLIP</strong><small>GAME SERIES</small></span></div><div class="footer-links"><a href="business.html">Business</a><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a><a href="refund.html">Refunds</a><a href="contact.html">Contact</a></div><p>Official game distribution portal · © <span id="year"></span> LOKAL AFRO FLIP</p></footer>
   <dialog id="authDialog" class="auth-dialog"><div class="auth-shell"><button class="dialog-close" id="authClose" aria-label="Close">×</button><p class="eyebrow">PLAYER ACCOUNT</p><h2 id="authTitle">Sign In</h2><div class="auth-tabs"><button class="auth-tab active" data-mode="signin">SIGN IN</button><button class="auth-tab" data-mode="signup">CREATE ACCOUNT</button></div><form id="authForm"><label>Email<input id="authEmail" type="email" autocomplete="email" required></label><label>Password<input id="authPassword" type="password" minlength="8" autocomplete="current-password" required></label><label id="nameField" class="hidden">Display name<input id="authName" type="text" maxlength="80"></label><button class="btn primary" id="authSubmit" type="submit">SIGN IN</button></form><button class="auth-link" id="forgotPasswordBtn" type="button">FORGOT PASSWORD?</button><p id="authMessage" class="auth-message"></p><button class="btn ghost hidden" id="resendConfirmBtn" type="button">RESEND VERIFICATION EMAIL</button><p class="auth-small">New accounts must verify their email before purchasing.</p></div></dialog>
   <dialog id="resetDialog" class="auth-dialog"><div class="auth-shell"><button class="dialog-close" id="resetClose" aria-label="Close">×</button><p class="eyebrow">ACCOUNT RECOVERY</p><h2>Set New Password</h2><form id="resetForm"><label>New password<input id="resetPassword" type="password" minlength="8" autocomplete="new-password" required></label><label>Confirm password<input id="resetPasswordConfirm" type="password" minlength="8" autocomplete="new-password" required></label><button class="btn primary" id="resetSubmit" type="submit">SAVE NEW PASSWORD</button></form><p id="resetMessage" class="auth-message"></p><p class="auth-small">Use at least 8 characters. After saving, this browser will remain signed in to your account.</p></div></dialog>
-  <script src="app.js?v=14"></script>
+  <script src="app.js?v=gcash1"></script>
 </body>
 </html>
