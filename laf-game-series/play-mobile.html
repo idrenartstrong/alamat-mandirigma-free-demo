@@ -5,37 +5,70 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#15130f">
   <title>Play ALAMAT na MANDIRIGMA — Mobile</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=shopify-mobile-access2">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <style>
-    body{min-height:100svh;display:grid;place-items:center;padding:20px}
-    .play-shell{width:min(760px,100%);background:var(--cream);border:1px solid var(--line);padding:clamp(26px,5vw,52px);box-shadow:0 24px 70px #2f271b24}
-    .play-shell h1{font-family:Georgia,serif;font-size:clamp(38px,7vw,70px);line-height:.95;margin:10px 0 18px}
+    body{min-height:100svh;display:grid;place-items:center;padding:18px}
+    .play-shell{width:min(760px,100%);background:var(--cream);border:1px solid var(--line);padding:clamp(24px,5vw,52px);box-shadow:0 24px 70px #2f271b24}
+    .play-shell h1{font-family:Georgia,serif;font-size:clamp(36px,7vw,68px);line-height:.95;margin:10px 0 18px}
     .play-shell p{line-height:1.6;color:var(--muted)}
-    .play-actions{display:grid;gap:10px;margin-top:24px}
+    .play-actions{display:grid;gap:10px;margin-top:20px}
     .play-actions .btn{width:100%}
-    .progress-wrap{margin-top:22px}
+    .progress-wrap{margin-top:20px}
     .progress-track{height:10px;background:#e5dac4;overflow:hidden;border:1px solid var(--line)}
     .progress-bar{height:100%;width:0;background:var(--ink);transition:width .15s linear}
-    .play-status{min-height:46px;font-size:13px;margin-top:10px;color:var(--muted)}
+    .play-status{min-height:42px;font-size:13px;margin-top:10px;color:var(--muted)}
     .play-note{font-size:12px;border-left:3px solid var(--gold);padding-left:12px}
+    .account-box{border:1px solid var(--line);padding:18px;margin-top:20px;background:#fffaf0}
+    .auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+    .auth-tab{padding:11px;border:1px solid var(--line);background:transparent;font-weight:900;cursor:pointer}
+    .auth-tab.active{background:var(--char);color:var(--cream)}
+    .auth-form label{display:block;font-size:12px;font-weight:800;margin:10px 0}
+    .auth-form input{width:100%;padding:12px;border:1px solid var(--line);background:white;font:inherit;margin-top:6px}
+    .auth-message{min-height:22px;font-size:13px;margin-top:10px}
+    .auth-message.ok{color:#24633d}.auth-message.err{color:#9a2e2e}
+    .hidden{display:none!important}
+    .small-link{font-size:12px;color:#7a571e}
   </style>
 </head>
 <body>
   <main class="play-shell">
-    <p class="eyebrow">OWNED MOBILE GAME</p>
+    <p class="eyebrow">LOKAL AFRO FLIP · OWNED MOBILE GAME</p>
     <h1>ALAMAT na MANDIRIGMA</h1>
-    <p><strong>VOLUME 1 · FULL MOBILE GAME</strong></p>
-    <p id="accountText">Checking your game license…</p>
-    <p class="play-note">For the best experience, use Safari on iPhone/iPad or Chrome on Android, rotate your phone to landscape, then use the game's fullscreen control.</p>
+    <p><strong>VOLUME 1 · iPHONE / iPAD / ANDROID</strong></p>
+    <p class="play-note"><strong>Shopify buyer:</strong> sign in with the same email address used at checkout. Your paid purchase will be matched to this account before the full game opens.</p>
+
+    <section class="account-box" id="authBox">
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-mode="signin">SIGN IN</button>
+        <button class="auth-tab" data-mode="signup">CREATE ACCOUNT</button>
+      </div>
+      <form class="auth-form" id="authForm">
+        <label>Email<input id="authEmail" type="email" autocomplete="email" required></label>
+        <label>Password<input id="authPassword" type="password" minlength="8" autocomplete="current-password" required></label>
+        <label id="nameField" class="hidden">Display name<input id="authName" type="text" maxlength="80"></label>
+        <button class="btn primary" id="authSubmit" type="submit">SIGN IN</button>
+      </form>
+      <p class="auth-message" id="authMessage"></p>
+      <p class="play-note">New accounts must verify their email before a Shopify purchase can be claimed.</p>
+    </section>
+
+    <section class="account-box hidden" id="ownedBox">
+      <p id="accountText">Checking your game access…</p>
+      <p class="auth-message" id="claimMessage"></p>
+      <button class="btn ghost" id="signOutBtn" type="button">SIGN OUT</button>
+    </section>
+
     <div class="progress-wrap hidden" id="progressWrap">
       <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
       <div class="play-status" id="status">Preparing secure game session…</div>
     </div>
+
     <div class="play-actions">
       <button class="btn primary" id="playBtn" disabled>PLAY FULL MOBILE GAME</button>
-      <a class="btn ghost" href="index.html#library">BACK TO MY LIBRARY</a>
+      <a class="btn ghost" href="https://mdpn4n-9p.myshopify.com/products/alamat-na-mandirigma-volume-1" target="_blank" rel="noopener">BUY GAME — ₱499</a>
+      <a class="small-link" href="https://lokalafroflip.com/">Back to LOKAL AFRO FLIP</a>
     </div>
   </main>
 
@@ -45,96 +78,184 @@ const SUPABASE_KEY="sb_publishable_W1XZHNiYWijmdx4e_XrM5g_viSBjrii";
 const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const playBtn=document.getElementById('playBtn');
 const accountText=document.getElementById('accountText');
+const claimMessage=document.getElementById('claimMessage');
 const statusEl=document.getElementById('status');
 const progressWrap=document.getElementById('progressWrap');
 const progressBar=document.getElementById('progressBar');
+const authBox=document.getElementById('authBox');
+const ownedBox=document.getElementById('ownedBox');
+const authMessage=document.getElementById('authMessage');
+let authMode='signin';
 
+function setMsg(el,text,type=''){el.textContent=text;el.className='auth-message '+type}
 function setProgress(p,text){
   progressWrap.classList.remove('hidden');
   progressBar.style.width=Math.max(2,Math.min(100,p))+'%';
   if(text)statusEl.textContent=text;
 }
-async function session(){
-  const {data}=await sb.auth.getSession();
-  return data.session||null;
+function setAuthMode(mode){
+  authMode=mode;
+  document.querySelectorAll('.auth-tab').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));
+  document.getElementById('nameField').classList.toggle('hidden',mode!=='signup');
+  document.getElementById('authSubmit').textContent=mode==='signup'?'CREATE ACCOUNT':'SIGN IN';
+  document.getElementById('authPassword').autocomplete=mode==='signup'?'new-password':'current-password';
+  setMsg(authMessage,'');
 }
-async function init(){
+document.querySelector('.auth-tabs').addEventListener('click',e=>{
+  const b=e.target.closest('[data-mode]');if(b)setAuthMode(b.dataset.mode);
+});
+
+async function session(){const {data}=await sb.auth.getSession();return data.session||null}
+
+async function hasExistingEntitlement(){
+  const {data,error}=await sb.from('entitlements')
+    .select('id,status,games!inner(slug)')
+    .eq('status','active')
+    .eq('games.slug','alamat-na-mandirigma-volume-1')
+    .limit(1);
+  if(error)return false;
+  return !!data?.length;
+}
+
+async function claimShopifyPurchase(s){
+  const res=await fetch(SUPABASE_URL+'/functions/v1/claim-shopify-purchase',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'Authorization':'Bearer '+s.access_token,
+      'apikey':SUPABASE_KEY
+    },
+    body:'{}'
+  });
+  const j=await res.json().catch(()=>({}));
+  return {ok:res.ok,data:j,status:res.status};
+}
+
+async function prepareAccess(){
   const s=await session();
   if(!s){
-    accountText.textContent='Please sign in to your LOKAL AFRO FLIP account first.';
+    authBox.classList.remove('hidden');
+    ownedBox.classList.add('hidden');
     playBtn.disabled=true;
-    playBtn.textContent='SIGN IN FROM MY LIBRARY';
-    playBtn.onclick=()=>location.href='index.html#library';
+    playBtn.textContent='SIGN IN TO PLAY';
     return;
   }
-  accountText.textContent='Signed in as '+(s.user.email||'player')+'. Your ownership will be checked before the game loads.';
-  playBtn.disabled=false;
+  authBox.classList.add('hidden');
+  ownedBox.classList.remove('hidden');
+  accountText.textContent='Signed in as '+(s.user.email||'player')+'.';
+  playBtn.disabled=true;
+  playBtn.textContent='CHECKING PURCHASE…';
+  setMsg(claimMessage,'Checking your paid game access…');
+
+  if(!s.user.email_confirmed_at){
+    setMsg(claimMessage,'Verify this email first, then return here and sign in.','err');
+    playBtn.textContent='EMAIL VERIFICATION REQUIRED';
+    return;
+  }
+
+  if(await hasExistingEntitlement()){
+    setMsg(claimMessage,'Game ownership verified. Your full mobile game is ready.','ok');
+    playBtn.disabled=false;
+    playBtn.textContent='PLAY FULL MOBILE GAME';
+    return;
+  }
+
+  const result=await claimShopifyPurchase(s);
+  if(result.ok){
+    setMsg(claimMessage,result.data.already_owned?'Game ownership verified.':'Shopify purchase matched. Full mobile access is unlocked.','ok');
+    playBtn.disabled=false;
+    playBtn.textContent='PLAY FULL MOBILE GAME';
+  }else{
+    setMsg(claimMessage,result.data.error||'No paid purchase is linked to this email yet. Use the same email you used at Shopify checkout.','err');
+    playBtn.textContent='PURCHASE NOT FOUND';
+  }
 }
+
+document.getElementById('authForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const email=document.getElementById('authEmail').value.trim();
+  const password=document.getElementById('authPassword').value;
+  const name=document.getElementById('authName').value.trim();
+  const btn=document.getElementById('authSubmit');
+  btn.disabled=true;
+  try{
+    if(authMode==='signup'){
+      const {data,error}=await sb.auth.signUp({
+        email,password,
+        options:{data:{display_name:name},emailRedirectTo:location.href.split('#')[0]}
+      });
+      if(error)throw error;
+      if(data.session){
+        setMsg(authMessage,'Account created. Checking your Shopify purchase…','ok');
+        await prepareAccess();
+      }else{
+        setMsg(authMessage,'Account created. Check your email, verify it, then return here and sign in.','ok');
+      }
+    }else{
+      const {error}=await sb.auth.signInWithPassword({email,password});
+      if(error)throw error;
+      setMsg(authMessage,'Signed in.','ok');
+      await prepareAccess();
+    }
+  }catch(err){setMsg(authMessage,err.message||'Account request failed.','err')}
+  finally{btn.disabled=false}
+});
+
+document.getElementById('signOutBtn').addEventListener('click',async()=>{
+  await sb.auth.signOut();progressWrap.classList.add('hidden');await prepareAccess();
+});
+
 async function fetchWithProgress(url){
   const res=await fetch(url,{cache:'no-store'});
   if(!res.ok)throw new Error('Could not load the protected mobile build.');
   const total=Number(res.headers.get('content-length')||0);
   if(!res.body){
-    const buf=await res.arrayBuffer();
-    setProgress(70,'Game package downloaded. Opening…');
-    return new Uint8Array(buf);
+    const buf=await res.arrayBuffer();setProgress(70,'Game package downloaded. Opening…');return new Uint8Array(buf);
   }
-  const reader=res.body.getReader();
-  const chunks=[];
-  let received=0;
+  const reader=res.body.getReader(),chunks=[];let received=0;
   for(;;){
-    const {done,value}=await reader.read();
-    if(done)break;
+    const {done,value}=await reader.read();if(done)break;
     chunks.push(value);received+=value.length;
     if(total)setProgress(10+(received/total)*55,'Downloading secure mobile game… '+Math.round((received/total)*100)+'%');
     else setProgress(35,'Downloading secure mobile game…');
   }
-  const bytes=new Uint8Array(received);
-  let pos=0;
+  const bytes=new Uint8Array(received);let pos=0;
   for(const chunk of chunks){bytes.set(chunk,pos);pos+=chunk.length}
   return bytes;
 }
+
 playBtn.addEventListener('click',async()=>{
-  playBtn.disabled=true;
-  const old=playBtn.textContent;
-  playBtn.textContent='LOADING FULL GAME…';
+  playBtn.disabled=true;const old=playBtn.textContent;playBtn.textContent='LOADING FULL GAME…';
   try{
-    const s=await session();
-    if(!s)throw new Error('Your store session expired. Please sign in again from My Library.');
+    const s=await session();if(!s)throw new Error('Please sign in again.');
     setProgress(5,'Verifying ownership…');
+    const claim=await claimShopifyPurchase(s);
+    if(!claim.ok && !(await hasExistingEntitlement()))throw new Error(claim.data.error||'Your purchase could not be verified.');
     const res=await fetch(SUPABASE_URL+'/functions/v1/create-download-link',{
       method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'Authorization':'Bearer '+s.access_token,
-        'apikey':SUPABASE_KEY
-      },
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+s.access_token,'apikey':SUPABASE_KEY},
       body:JSON.stringify({game_slug:'alamat-na-mandirigma-volume-1',platform:'mobile_play'})
     });
-    const j=await res.json();
-    if(!res.ok)throw new Error(j.error||'Your mobile game access could not be verified.');
+    const j=await res.json();if(!res.ok)throw new Error(j.error||'Mobile game access could not be verified.');
     setProgress(10,'Ownership verified. Loading protected game package…');
     const bytes=await fetchWithProgress(j.download_url);
     setProgress(68,'Preparing the full game…');
     const zip=await JSZip.loadAsync(bytes);
-    const entry=zip.file('ALAMAT_NA_MANDIRIGMA_VOLUME_1_MOBILE.html') || Object.values(zip.files).find(f=>!f.dir && /\.html$/i.test(f.name));
+    const entry=zip.file('ALAMAT_NA_MANDIRIGMA_VOLUME_1_MOBILE.html')||Object.values(zip.files).find(f=>!f.dir&&/\.html$/i.test(f.name));
     if(!entry)throw new Error('The mobile game file is missing from the package.');
-    const gameBlob=await entry.async('blob',meta=>{
-      setProgress(68+(meta.percent*.28),'Preparing full game… '+Math.round(meta.percent)+'%');
-    });
+    const gameBlob=await entry.async('blob',meta=>setProgress(68+(meta.percent*.28),'Preparing full game… '+Math.round(meta.percent)+'%'));
     const htmlBlob=new Blob([gameBlob],{type:'text/html'});
     const gameUrl=URL.createObjectURL(htmlBlob);
     setProgress(100,'Ready. Launching ALAMAT na MANDIRIGMA…');
     setTimeout(()=>location.replace(gameUrl),250);
   }catch(e){
-    console.error(e);
-    statusEl.textContent=e.message||'Could not start the mobile game.';
-    progressBar.style.width='0%';
-    playBtn.disabled=false;
-    playBtn.textContent=old;
+    console.error(e);statusEl.textContent=e.message||'Could not start the mobile game.';progressBar.style.width='0%';
+    playBtn.disabled=false;playBtn.textContent=old;
   }
 });
-init();
+
+sb.auth.onAuthStateChange(()=>setTimeout(prepareAccess,0));
+prepareAccess();
 </script>
 </body>
 </html>
