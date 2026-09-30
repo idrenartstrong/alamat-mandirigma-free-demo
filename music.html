@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#15130f">
+  <title>Music — LOKAL AFRO FLIP</title>
+  <meta name="description" content="Original music from LOKAL AFRO FLIP — listen to previews and buy official digital releases direct.">
+  <link rel="canonical" href="https://lokalafroflip.com/music.html">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root{--cream:#f4eedf;--paper:#fffaf0;--ink:#171510;--char:#211d17;--gold:#b8872c;--gold2:#e0b85d;--muted:#756d60;--line:rgba(117,109,96,.25);--dark:#17140f;--ok:#256a43;--err:#9d352b}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    .hidden{display:none!important}.topbar{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:14px clamp(18px,4vw,64px);background:rgba(244,238,223,.94);border-bottom:1px solid var(--line);backdrop-filter:blur(15px)}
+    .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}.brand-mark{width:42px;height:42px;border:1px solid var(--gold);background:var(--char);overflow:hidden;display:grid;place-items:center}.brand-mark img{width:100%;height:100%;object-fit:cover;display:block}.brand strong,.brand small{display:block}.brand strong{font-size:13px;letter-spacing:.12em}.brand small{font-size:9px;letter-spacing:.25em;color:var(--muted);margin-top:2px}
+    .nav{display:flex;align-items:center;gap:19px}.nav a,.nav button{border:0;background:none;color:var(--ink);text-decoration:none;text-transform:uppercase;font-size:11px;font-weight:850;letter-spacing:.12em;cursor:pointer}.nav .active{color:#9b6d1e}.menu{display:none;border:0;background:none;font-size:27px}
+    .hero{min-height:520px;padding:78px clamp(22px,7vw,100px);display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.8fr);gap:54px;align-items:center;background:radial-gradient(circle at 78% 30%,rgba(184,135,44,.17),transparent 30%),linear-gradient(120deg,#f9f2e2,#e8dcc4)}
+    .eyebrow{text-transform:uppercase;letter-spacing:.22em;font-weight:900;font-size:11px;color:#92681f}.hero h1{font-size:clamp(48px,8vw,100px);line-height:.84;margin:14px 0 24px;letter-spacing:-.065em}.hero h1 span{color:var(--gold)}.lead{font-size:clamp(17px,2vw,22px);line-height:1.55;max-width:720px;color:#514b42}.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+    .btn{border:1px solid var(--ink);min-height:44px;padding:12px 18px;font:inherit;font-weight:900;font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.btn.primary{background:var(--ink);color:#fff}.btn.ghost{background:transparent;color:var(--ink)}.btn:disabled{opacity:.45;cursor:not-allowed}
+    .record{width:min(390px,82vw);aspect-ratio:1;border-radius:50%;margin:auto;background:repeating-radial-gradient(circle,#1b1814 0 6px,#26211b 7px 10px);box-shadow:0 28px 60px rgba(0,0,0,.2);position:relative}.record:after{content:"LAF\\A MUSIC";white-space:pre;position:absolute;inset:34%;border-radius:50%;display:grid;place-items:center;text-align:center;background:var(--gold2);font-weight:1000;letter-spacing:.08em;line-height:1.1}
+    .section{padding:72px clamp(22px,7vw,100px)}.section.dark{background:var(--dark);color:#f9f1df}.section-head{display:flex;justify-content:space-between;gap:28px;align-items:end;margin-bottom:32px}.section-head h2{font-size:clamp(34px,5vw,62px);line-height:.95;margin:6px 0}.section-head>p{max-width:600px;line-height:1.65;color:var(--muted)}.dark .section-head>p{color:#cfc4ae}
+    .notice{margin:0 0 24px;padding:14px 16px;border:1px solid rgba(184,135,44,.45);background:rgba(224,184,93,.13);font-size:14px}.notice.err{border-color:#b75b4f;background:rgba(183,91,79,.12)}
+    .track-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}.track-card{display:grid;grid-template-rows:auto auto 1fr auto auto auto;gap:14px;padding:18px;background:var(--paper);border:1px solid var(--line);box-shadow:0 14px 30px rgba(35,29,19,.05)}.cover{aspect-ratio:1;background:linear-gradient(135deg,#19150f,#8d6727);background-size:cover;background-position:center;position:relative;overflow:hidden}.cover:after{content:"LOKAL AFRO FLIP";position:absolute;left:14px;right:14px;bottom:13px;color:white;font-weight:950;letter-spacing:.13em;font-size:10px;text-shadow:0 2px 8px #000}.track-card h3{font-size:24px;margin:0}.artist{color:#92681f;font-weight:850;margin:4px 0 0}.desc{color:var(--muted);line-height:1.55;margin:0}.preview-label{display:flex;justify-content:space-between;text-transform:uppercase;font-size:10px;font-weight:900;letter-spacing:.12em;color:var(--muted);margin-bottom:8px}audio{width:100%;height:40px}.price{font-size:25px;font-weight:1000}.price small{display:block;color:var(--muted);font-size:11px;font-weight:700;margin-top:2px}.buy-row{display:flex;gap:9px}.buy-row .btn{flex:1}.empty{grid-column:1/-1;padding:42px;text-align:center;border:1px dashed var(--gold);background:rgba(224,184,93,.08)}
+    .trust{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.trust>div{padding:24px;border:1px solid var(--line);background:rgba(255,255,255,.28)}.trust h3{margin:0 0 9px}.trust p{margin:0;color:var(--muted);line-height:1.6}
+    .library{display:grid;gap:14px}.library-item{display:grid;grid-template-columns:1fr auto;align-items:center;gap:18px;padding:18px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.04)}.library-item h3{margin:0 0 5px}.library-item p{margin:0;color:#cfc4ae}
+    footer{padding:30px clamp(22px,7vw,100px);display:flex;justify-content:space-between;align-items:center;gap:24px;border-top:1px solid var(--line)}
+    dialog{border:0;padding:0;background:transparent;max-width:min(94vw,520px);width:100%}dialog::backdrop{background:rgba(0,0,0,.65);backdrop-filter:blur(5px)}.auth-shell{position:relative;background:var(--paper);padding:30px;border:1px solid var(--gold)}.close{position:absolute;right:13px;top:10px;border:0;background:none;font-size:30px;cursor:pointer}.auth-tabs{display:flex;gap:8px;margin:16px 0}.auth-tab{flex:1;padding:10px;border:1px solid var(--line);background:transparent;font-weight:900;cursor:pointer}.auth-tab.active{background:var(--ink);color:white}label{display:grid;gap:7px;font-weight:800;font-size:12px;margin:13px 0}input{padding:13px;border:1px solid #bcb29f;background:#fff;font:inherit}.auth-message{font-size:13px;line-height:1.45;color:var(--muted)}
+    @media(max-width:900px){.track-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{grid-template-columns:1fr;text-align:center}.hero .lead{margin:auto}.cta{justify-content:center}.section-head{display:block}.nav{display:none;position:absolute;right:16px;top:67px;flex-direction:column;align-items:stretch;background:var(--paper);border:1px solid var(--line);padding:16px;min-width:220px}.nav.open{display:flex}.menu{display:block}.trust{grid-template-columns:1fr}}
+    @media(max-width:600px){.track-grid{grid-template-columns:1fr}.section{padding:52px 18px}.hero{padding:58px 18px}.hero h1{font-size:54px}.library-item{grid-template-columns:1fr}.buy-row{flex-direction:column}footer{flex-direction:column;text-align:center}}
+  </style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/"><span class="brand-mark"><img src="/logo.png" alt="LOKAL AFRO FLIP logo"></span><span><strong>LOKAL AFRO FLIP</strong><small>MUSIC + GAME SERIES</small></span></a>
+  <nav class="nav" id="nav">
+    <a href="/">Home</a><a href="/#games">Games</a><a class="active" href="/music.html">Music</a><a href="#library">My Music</a><button id="accountBtn">Sign In</button><button id="signOutBtn" class="hidden">Sign Out</button>
+  </nav>
+  <button class="menu" id="menu" aria-label="Open menu">☰</button>
+</header>
+
+<main>
+  <section class="hero">
+    <div>
+      <p class="eyebrow">ORIGINAL RELEASES · DIRECT FROM THE ARTIST</p>
+      <h1>LOKAL AFRO FLIP<br><span>MUSIC</span></h1>
+      <p class="lead">Listen to official previews, buy original digital releases directly, and keep purchased tracks in your private music library.</p>
+      <div class="cta"><a class="btn primary" href="#music">EXPLORE MUSIC</a><a class="btn ghost" href="#library">MY MUSIC</a></div>
+    </div>
+    <div class="record" aria-label="LOKAL AFRO FLIP music"></div>
+  </section>
+
+  <section class="section" id="music">
+    <div class="section-head"><div><p class="eyebrow">OFFICIAL MUSIC STORE</p><h2>Original Releases</h2></div><p>Each release can include cover art, a public audio preview, PHP pricing for Philippine checkout, and a protected full-quality file after purchase.</p></div>
+    <div id="notice" class="notice hidden" role="status"></div>
+    <div id="trackGrid" class="track-grid"><div class="empty">Loading music catalog…</div></div>
+  </section>
+
+  <section class="section">
+    <div class="trust"><div><h3>Preview first</h3><p>Listeners can play a public preview before buying. The paid master remains in private storage.</p></div><div><h3>Direct checkout</h3><p>Philippine purchases use your secure PayMongo checkout flow, including available GCash / QR Ph methods.</p></div><div><h3>Protected delivery</h3><p>After verified payment, buyers receive a short-lived private download link for the track they own.</p></div></div>
+  </section>
+
+  <section class="section dark" id="library">
+    <div class="section-head"><div><p class="eyebrow">CUSTOMER ACCOUNT</p><h2>My Music</h2></div><p id="libraryIntro">Sign in to see purchased tracks and create protected download links.</p></div>
+    <div id="libraryItems" class="library"></div>
+  </section>
+</main>
+
+<footer><a class="brand" href="/"><span class="brand-mark"><img src="/logo.png" alt="LOKAL AFRO FLIP logo"></span><span><strong>LOKAL AFRO FLIP</strong><small>MUSIC</small></span></a><p>Official music distribution portal · © <span id="year"></span> LOKAL AFRO FLIP</p></footer>
+
+<dialog id="authDialog">
+  <div class="auth-shell"><button class="close" id="authClose" aria-label="Close">×</button><p class="eyebrow">CUSTOMER ACCOUNT</p><h2 id="authTitle">Sign In</h2>
+    <div class="auth-tabs"><button class="auth-tab active" data-mode="signin">SIGN IN</button><button class="auth-tab" data-mode="signup">CREATE ACCOUNT</button></div>
+    <form id="authForm"><label>Email<input id="authEmail" type="email" autocomplete="email" required></label><label>Password<input id="authPassword" type="password" minlength="8" required></label><label id="nameField" class="hidden">Display name<input id="authName" type="text" maxlength="80"></label><button class="btn primary" id="authSubmit" type="submit">SIGN IN</button></form>
+    <p id="authMessage" class="auth-message"></p><p class="auth-message">New accounts must verify their email before purchasing.</p>
+  </div>
+</dialog>
+
+<script>
+(function(){
+  var SUPABASE_URL='https://bnbddwrpbumbinuvzouv.supabase.co';
+  var SUPABASE_KEY='sb_publishable_W1XZHNiYWijmdx4e_XrM5g_viSBjrii';
+  var sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+  var grid=document.getElementById('trackGrid'), noticeBox=document.getElementById('notice'), library=document.getElementById('libraryItems'), intro=document.getElementById('libraryIntro');
+  var accountBtn=document.getElementById('accountBtn'), signOutBtn=document.getElementById('signOutBtn'), dlg=document.getElementById('authDialog'), authForm=document.getElementById('authForm'), authMsg=document.getElementById('authMessage'), nameField=document.getElementById('nameField'), authSubmit=document.getElementById('authSubmit');
+  var authMode='signin';
+  document.getElementById('year').textContent=new Date().getFullYear();
+  document.getElementById('menu').onclick=function(){document.getElementById('nav').classList.toggle('open')};
+  function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]})}
+  function moneyPHP(v){return '₱'+(Number(v||0)/100).toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2})}
+  function moneyUSD(v){return '$'+(Number(v||0)/100).toFixed(2)}
+  function previewUrl(path){if(!path)return '';var r=sb.storage.from('music-previews').getPublicUrl(path);return r&&r.data?r.data.publicUrl:''}
+  function notice(msg,bad){noticeBox.textContent=msg;noticeBox.className='notice'+(bad?' err':'');noticeBox.classList.remove('hidden')}
+  function clearNotice(){noticeBox.classList.add('hidden')}
+  async function session(){var r=await sb.auth.getSession();return r.data.session}
+  async function loadTracks(){
+    var r=await sb.from('music_tracks').select('slug,title,artist,description,cover_url,preview_path,price_php_minor,price_usd_minor,format_label,release_date').eq('active',true).order('release_date',{ascending:false,nullsFirst:false});
+    if(r.error){grid.innerHTML='<div class="empty">Music catalog is temporarily unavailable.</div>';return}
+    if(!r.data||!r.data.length){grid.innerHTML='<div class="empty"><h3>Music releases are ready to be added.</h3><p>Upload a preview and full master, set the price, then activate the track to publish it here.</p></div>';return}
+    grid.innerHTML=r.data.map(function(t){
+      var p=previewUrl(t.preview_path), cover=t.cover_url?esc(t.cover_url):'';
+      return '<article class="track-card" data-slug="'+esc(t.slug)+'"><div class="cover"'+(cover?' style="background-image:url(\\''+cover+'\\')"':'')+'></div><div><h3>'+esc(t.title)+'</h3><p class="artist">'+esc(t.artist)+'</p></div><p class="desc">'+esc(t.description||'Original release from LOKAL AFRO FLIP.')+'</p><div><div class="preview-label"><span>Audio preview</span><span>'+esc(t.format_label||'Digital')+'</span></div>'+(p?'<audio controls preload="none" src="'+esc(p)+'"></audio>':'<p class="desc">Preview coming soon.</p>')+'</div><div class="price">'+moneyPHP(t.price_php_minor)+'<small>'+moneyUSD(t.price_usd_minor)+' international reference</small></div><div class="buy-row"><button class="btn primary buy-ph">BUY NOW</button></div></article>';
+    }).join('');
+    Array.from(document.querySelectorAll('.buy-ph')).forEach(function(b){b.onclick=function(){startPayMongo(b.closest('.track-card').getAttribute('data-slug'),b)}});
+  }
+  function openAuth(){authMsg.textContent='';dlg.showModal()}
+  accountBtn.onclick=openAuth;document.getElementById('authClose').onclick=function(){dlg.close()};
+  Array.from(document.querySelectorAll('.auth-tab')).forEach(function(t){t.onclick=function(){
+    authMode=t.getAttribute('data-mode');Array.from(document.querySelectorAll('.auth-tab')).forEach(function(x){x.classList.toggle('active',x===t)});
+    document.getElementById('authTitle').textContent=authMode==='signin'?'Sign In':'Create Account';authSubmit.textContent=authMode==='signin'?'SIGN IN':'CREATE ACCOUNT';nameField.classList.toggle('hidden',authMode!=='signup');authMsg.textContent='';
+  }});
+  authForm.onsubmit=async function(e){
+    e.preventDefault();authSubmit.disabled=true;authMsg.textContent='Working…';
+    var email=document.getElementById('authEmail').value.trim(),password=document.getElementById('authPassword').value,name=document.getElementById('authName').value.trim();
+    try{
+      var r;
+      if(authMode==='signin')r=await sb.auth.signInWithPassword({email:email,password:password});
+      else r=await sb.auth.signUp({email:email,password:password,options:{data:{display_name:name},emailRedirectTo:'https://lokalafroflip.com/music.html'}});
+      if(r.error)throw r.error;
+      if(authMode==='signup'&&!r.data.session){authMsg.textContent='Account created. Check your email and verify it before buying.'}
+      else{dlg.close();await refreshAccount()}
+    }catch(err){authMsg.textContent=err.message||'Could not complete sign in.'}finally{authSubmit.disabled=false}
+  };
+  signOutBtn.onclick=async function(){await sb.auth.signOut();await refreshAccount()};
+  async function requireBuyer(){
+    var s=await session();if(!s){openAuth();return null}
+    if(!s.user.email_confirmed_at){notice('Verify your email before purchasing.',true);return null}
+    return s
+  }
+  async function startPayMongo(slug,button){
+    clearNotice();var s=await requireBuyer();if(!s)return;var old=button.textContent;button.disabled=true;button.textContent='OPENING CHECKOUT…';
+    try{
+      var res=await fetch(SUPABASE_URL+'/functions/v1/create-music-paymongo-checkout',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+s.access_token,'apikey':SUPABASE_KEY},body:JSON.stringify({track_slug:slug})});
+      var j=await res.json();if(!res.ok)throw new Error(j.error||'Checkout unavailable.');
+      if(j.already_owned){location.hash='library';await loadLibrary(s);return}
+      location.href=j.checkout_url;
+    }catch(err){notice(err.message||'Checkout unavailable.',true);button.disabled=false;button.textContent=old}
+  }
+  async function loadLibrary(s){
+    library.innerHTML='';
+    if(!s){intro.textContent='Sign in to see purchased tracks and create protected download links.';return}
+    intro.textContent='Signed in as '+s.user.email+'. Purchased releases appear below.';
+    var r=await sb.from('music_entitlements').select('id,status,granted_at,music_tracks!inner(slug,title,artist,format_label)').eq('status','active').order('granted_at',{ascending:false});
+    if(r.error){library.innerHTML='<div class="empty">Could not load your music library.</div>';return}
+    if(!r.data||!r.data.length){library.innerHTML='<div class="empty">No purchased music yet.</div>';return}
+    library.innerHTML=r.data.map(function(e){var t=Array.isArray(e.music_tracks)?e.music_tracks[0]:e.music_tracks;return '<div class="library-item" data-slug="'+esc(t.slug)+'"><div><h3>'+esc(t.title)+'</h3><p>'+esc(t.artist)+' · '+esc(t.format_label||'Digital download')+'</p></div><button class="btn primary download">DOWNLOAD</button></div>'}).join('');
+    Array.from(library.querySelectorAll('.download')).forEach(function(b){b.onclick=function(){downloadTrack(b.closest('.library-item').getAttribute('data-slug'),b)}});
+  }
+  async function downloadTrack(slug,button){
+    var s=await session();if(!s){openAuth();return}var old=button.textContent;button.disabled=true;button.textContent='PREPARING…';
+    try{var res=await fetch(SUPABASE_URL+'/functions/v1/download-music',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+s.access_token,'apikey':SUPABASE_KEY},body:JSON.stringify({track_slug:slug})});var j=await res.json();if(!res.ok)throw new Error(j.error||'Download unavailable.');location.href=j.download_url}catch(err){notice(err.message||'Download unavailable.',true)}finally{button.disabled=false;button.textContent=old}
+  }
+  async function refreshAccount(){
+    var s=await session();accountBtn.classList.toggle('hidden',!!s);signOutBtn.classList.toggle('hidden',!s);await loadLibrary(s)
+  }
+  async function handleReturn(){
+    var q=new URLSearchParams(location.search);
+    if(q.get('music_payment')==='success'){notice('Payment returned successfully. We are checking your music library now.');location.hash='library';var s=await session();if(s){for(var i=0;i<5;i++){await loadLibrary(s);await new Promise(function(r){setTimeout(r,1200)})}}}
+    if(q.get('music_payment')==='cancelled'){notice('Checkout was cancelled. No purchase was completed.',true)}
+  }
+  sb.auth.onAuthStateChange(function(){setTimeout(refreshAccount,0)});
+  loadTracks();refreshAccount();handleReturn();
+})();
+</script>
+</body>
+</html>
