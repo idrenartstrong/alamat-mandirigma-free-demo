@@ -42,3 +42,8 @@
   background-repeat:no-repeat !important;
   filter:none !important;
 }
+
+/* Store purchase options */
+#store .checkout-box{grid-column:1/-1}
+#store .bundle-card{border-color:rgba(184,135,44,.65);box-shadow:0 14px 32px rgba(184,135,44,.10)}
+@media(max-width:900px){#store .store-grid{grid-template-columns:1fr}#store .checkout-box{grid-column:auto}}
