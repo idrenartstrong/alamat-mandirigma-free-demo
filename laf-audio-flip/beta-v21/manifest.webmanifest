@@ -1,1 +1,21 @@
-﻿{"name":"LOKAL AUDIO FLIP Beta","short_name":"AUDIO FLIP","description":"Audio to MIDI and mastering beta","start_url":"./","scope":"./","display":"standalone","background_color":"#101822","theme_color":"#101822"}
+{
+    "display":  "standalone",
+    "icons":  [
+                  {
+                      "type":  "image/png",
+                      "sizes":  "192x192",
+                      "src":  "./icon-192.png"
+                  },
+                  {
+                      "type":  "image/png",
+                      "sizes":  "512x512",
+                      "src":  "./icon-512.png"
+                  }
+              ],
+    "background_color":  "#101822",
+    "theme_color":  "#101822",
+    "name":  "LOKAL AUDIO FLIP V2.1 Beta",
+    "start_url":  "./",
+    "scope":  "./",
+    "short_name":  "AUDIO FLIP"
+}
