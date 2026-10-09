@@ -1,0 +1,78 @@
+/* LOKAL CONVERTED MIDI VIEW SELECTOR v1 */
+.midiViewSelector{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:10px 0 12px;padding:10px 12px;border:1px solid #2d4447;border-radius:10px;background:linear-gradient(180deg,#101b1d,#091113);box-shadow:inset 0 1px #ffffff08}
+.midiViewLeft{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.midiViewLeft>b{font:800 10px Arial;letter-spacing:.12em;color:#86a39d;margin-right:5px}
+.midiViewBtn{min-height:32px;padding:0 13px;border:1px solid #3a5558!important;border-radius:7px!important;background:#111d1f!important;color:#b7c7c4!important;font:800 10px Arial!important;letter-spacing:.06em;box-shadow:none!important}
+.midiViewBtn:hover{border-color:#65ef5c!important;color:#eaffd5!important}.midiViewBtn.active{border-color:#9bff69!important;background:#13291a!important;color:#d9ff65!important;box-shadow:0 0 12px #65ef5c25!important}
+.midiSpeed{display:flex;align-items:center;gap:8px;color:#839b96;font:800 9px Arial;letter-spacing:.08em;white-space:nowrap}.midiSpeed select{height:31px;border:1px solid #385255;border-radius:7px;background:#0b1517;color:#d9ff65;padding:0 8px;font-weight:800}
+.midiAltView{margin-top:8px;min-height:300px;border:1px solid #263c3f;border-radius:10px;background:#081012;overflow:auto;max-width:100%}.midiAltView[hidden]{display:none!important}
+.mvScoreSvg,.mvTabSvg{display:block;max-height:560px}.mvFoot{position:sticky;left:0;padding:9px 13px;background:#0c1719;border-top:1px solid #263c3f;color:#78918c;font:700 10px Arial;letter-spacing:.03em}
+.mvEmpty{display:flex;align-items:center;justify-content:center;min-height:300px;padding:30px;color:#8fa39f;font:700 13px Arial;text-align:center}
+.mvNoteList{max-height:520px;overflow:auto}.mvNoteList table{width:100%;border-collapse:collapse;font:12px monospace;color:#c9d6d3}.mvNoteList th{position:sticky;top:0;background:#122124;color:#d9ff65;text-align:left;padding:10px;border-bottom:1px solid #3b5558}.mvNoteList td{padding:8px 10px;border-bottom:1px solid #17282b}.mvNoteList tr:hover td{background:#102022}
+@media(max-width:900px){.midiViewSelector{align-items:flex-start;flex-direction:column}.midiSpeed{width:100%;justify-content:flex-end}.midiViewBtn{padding:0 9px}}
+
+/* LIVE AUDIO/MIDI SCORE + TAB SYNC v2 */
+.mvLivePlayhead{stroke:#78ff47;stroke-width:2.2;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 4px #65ef5c);pointer-events:none}
+.mvPlayheadCap{fill:#d9ff65;stroke:#163b20;stroke-width:2;filter:drop-shadow(0 0 5px #65ef5c);pointer-events:none}
+.mvPlayheadTime{fill:#246b26;font:800 11px Arial;paint-order:stroke;stroke:#f7f3e8;stroke-width:3px;stroke-linejoin:round;pointer-events:none}
+.mvScoreSvg .mvNoteHead{fill:#111;transition:fill .045s linear,filter .045s linear,transform .045s linear;transform-box:fill-box;transform-origin:center}
+.mvScoreSvg .mvNoteStem{stroke:#111;transition:stroke .045s linear,filter .045s linear}
+.mvScoreSvg .mvNoteName{fill:#555;transition:fill .045s linear,font-weight .045s linear}
+.mvScoreSvg .mvTimedNote.live .mvNoteHead{fill:#42c91d;filter:drop-shadow(0 0 5px #65ef5c);transform:scale(1.42)}
+.mvScoreSvg .mvTimedNote.live .mvNoteStem{stroke:#35a817;filter:drop-shadow(0 0 3px #65ef5c)}
+.mvScoreSvg .mvTimedNote.live .mvNoteName{fill:#16820c;font-weight:900}
+.mvTabSvg .mvPlayheadTime{fill:#d9ff65;stroke:#0b1214}
+.mvTabFret{fill:#0b1214;stroke:#65ef5c;transition:fill .045s linear,stroke .045s linear,filter .045s linear}
+.mvTabText{fill:#eaffd5;transition:fill .045s linear}
+.mvTabNote.live .mvTabFret{fill:#65ef5c;stroke:#d9ff65;filter:drop-shadow(0 0 6px #65ef5c)}
+.mvTabNote.live .mvTabText{fill:#071009}
+.mvNoteList tr.live td{background:#17351c!important;color:#d9ff65!important;box-shadow:inset 3px 0 #65ef5c}
+
+/* READABLE MUSIC NOTATION v3 */
+.mvScoreSvg .mvStaffLine{stroke:#242424;stroke-width:1.15;shape-rendering:crispEdges}
+.mvScoreSvg .mvBarLine{stroke:#363636;stroke-width:1.35;shape-rendering:crispEdges}
+.mvScoreSvg .mvBeatGuide{stroke:#c9c2b3;stroke-width:.55;stroke-dasharray:2 5;opacity:.42}
+.mvScoreSvg .mvBraceLine{stroke:#111;stroke-width:2}
+.mvScoreSvg .mvClef{fill:#111;font-family:"Segoe UI Symbol","Noto Music","Bravura","Arial Unicode MS",serif}
+.mvScoreSvg .mvTimeSig{fill:#111;font-family:Georgia,serif;font-weight:800;text-anchor:middle}
+.mvScoreSvg .mvScoreTitle{fill:#111;font-family:Arial,sans-serif}
+.mvScoreSvg .mvScoreMeta,.mvScoreSvg .mvMeasureNo{fill:#68635b;font-family:Arial,sans-serif;font-weight:700}
+.mvScoreSvg .mvLedger{stroke:#111;stroke-width:1.3}
+.mvScoreSvg .mvAccidental{fill:#111;font-family:"Segoe UI Symbol","Arial Unicode MS",serif;font-weight:700}
+.mvScoreSvg .mvNoteHead{fill:#111;stroke:#111;stroke-width:1.35}
+.mvScoreSvg .mvNoteHead.open{fill:#f7f3e8!important;stroke:#111!important;stroke-width:1.8}
+.mvScoreSvg .mvNoteStem{stroke:#111}
+.mvScoreSvg .mvNoteFlag{fill:none;stroke:#111;stroke-width:2.1;stroke-linecap:round}
+.mvScoreSvg .mvNoteDot{fill:#111}
+.mvScoreSvg .mvNotationNote{cursor:help}
+.mvScoreSvg .mvNotationNote.live .mvNoteHead{fill:#43c91e!important;stroke:#16810d!important;filter:drop-shadow(0 0 5px #65ef5c)}
+.mvScoreSvg .mvNotationNote.live .mvNoteHead.open{fill:#d9ff65!important;stroke:#16810d!important}
+.mvScoreSvg .mvNotationNote.live .mvNoteStem,.mvScoreSvg .mvNotationNote.live .mvNoteFlag,.mvScoreSvg .mvNotationNote.live .mvLedger{stroke:#16810d!important;filter:drop-shadow(0 0 3px #65ef5c)}
+.mvScoreSvg .mvNotationNote.live .mvAccidental{fill:#16810d!important}
+.mvScoreSvg .mvNotationNote.live .mvNoteDot{fill:#16810d!important}
+.mvNotationLegend{position:sticky;left:0;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:9px 13px;background:#f1ecdf;border-top:1px solid #c8c0af;color:#242424;font:12px Arial;min-width:max-content}
+.mvNotationLegend b{font-size:10px;letter-spacing:.08em}.mvNotationLegend span{font-family:"Segoe UI Symbol","Noto Music","Arial Unicode MS",serif;font-weight:700}.mvNotationLegend em{font-family:Arial,sans-serif;color:#716b61;font-size:10px}
+
+.mvScoreSvg .mvRestMark{fill:#111}
+.mvScoreSvg .mvRestPath{fill:none;stroke:#111;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.mvScoreSvg .mvNotationRest{opacity:.9}
+
+.mvScoreSvg{min-width:100%;background:#f7f3e8}
+
+/* SHEET MUSIC HORIZONTAL ZOOM + SMOOTH FOLLOW v5 */
+.mvScoreZoomBar{position:sticky;left:0;top:0;z-index:40;width:max-content;display:flex;align-items:center;gap:7px;margin:8px 10px;padding:6px 8px;border:1px solid #385255;border-radius:8px;background:#0b1517eF;box-shadow:0 4px 14px #0008;color:#8fa39f;font:800 9px Arial;letter-spacing:.08em}
+.mvScoreZoomBar b{margin-right:2px;color:#9eb5b0}
+.mvScoreZoomBar button{width:32px;height:28px;padding:0!important;border:1px solid #496568!important;border-radius:6px!important;background:#132124!important;color:#d9ff65!important;font:900 18px/1 Arial!important;box-shadow:none!important}
+.mvScoreZoomBar button:hover{border-color:#78ff47!important;background:#18301d!important}
+.mvScoreZoomBar span{min-width:43px;text-align:center;color:#e6f6e2;font:900 10px Arial}
+.mvScoreSvg{contain:layout paint;transform:translateZ(0);backface-visibility:hidden}
+
+/* LOKAL MIDI TIMING STRIP v6 */
+.midiTimingStrip{display:grid;grid-template-columns:minmax(125px,.9fr) minmax(110px,.8fr) minmax(220px,1.55fr) 72px minmax(125px,.9fr) 78px;align-items:stretch;margin:0 0 10px;border:1px solid #31494c;border-radius:10px;overflow:hidden;background:linear-gradient(180deg,#152124,#0b1315);box-shadow:inset 0 1px #ffffff0a,0 5px 18px #0004;color:#dbe8e5}
+.mtsCell,.mtsClick{min-height:68px;border:0!important;border-right:1px solid #31494c!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;padding:8px 11px!important;box-sizing:border-box}
+.mtsCell{display:flex;flex-direction:column;justify-content:center;gap:3px}.mtsCell small,.mtsClick small{font:800 8px Arial;letter-spacing:.11em;color:#78928d}.mtsCell b{font:900 12px Arial;color:#c9d8d5}.mtsCell strong{font:900 22px/1.05 Consolas,monospace;letter-spacing:.015em;color:#f0f7f5}
+.mtsQuant select{height:30px;border:1px solid #496266;border-radius:6px;background:#0b1517;color:#e8f4f1;padding:0 8px;font:900 15px Arial}
+.mtsPos{align-items:center}.mtsPos small{align-self:flex-start}.mtsPosition{font-size:21px!important}.mtsClock{font:800 14px Consolas,monospace;color:#9fb2ae}
+.mtsClick{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#94aaa5!important;cursor:pointer}.mtsClick span{font:900 27px/1 Arial}.mtsClick.active{background:#17331e!important;color:#d9ff65!important;box-shadow:inset 0 0 18px #65ef5c22!important}.mtsClick.active small{color:#a9ff80}
+.mtsTempo{align-items:center}.mtsBpm{font-size:20px!important}.mtsTap{border:0!important;background:transparent!important;color:#88a09b!important;padding:0!important;min-height:15px!important;font:900 9px Arial!important;letter-spacing:.12em;box-shadow:none!important}.mtsTap:hover{color:#d9ff65!important}
+.mtsSig{align-items:center;border-right:0!important}.mtsSig strong{font-size:20px!important}.midiTimingStrip.playing .mtsPosition{color:#d9ff65;text-shadow:0 0 8px #65ef5c35}
+@media(max-width:980px){.midiTimingStrip{grid-template-columns:1fr 1fr 1.6fr}.mtsCell,.mtsClick{border-bottom:1px solid #31494c!important}.mtsSig{border-right:0!important}}
