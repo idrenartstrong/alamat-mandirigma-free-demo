@@ -1,0 +1,118 @@
+.mobile-transport-label {display:none}
+/* Mobile-only responsive mastering transport. Desktop remains unchanged. */
+@media (max-width: 1024px) and (orientation: portrait) and (hover: none) and (pointer: coarse) {
+  html, body {width:100%;max-width:100%;overflow-x:hidden}
+  #masteringSection {width:100%;max-width:100%;margin:10px 0;box-sizing:border-box;padding:10px 8px}
+  #masteringSection .masterWrap,#masteringApp {width:100%;max-width:100%;min-width:0;box-sizing:border-box}
+  #masteringApp {display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:none!important;gap:10px!important}
+  #masteringApp > :not(.engineTag) {grid-column:1!important;grid-row:auto!important;min-width:0;max-width:100%;box-sizing:border-box}
+  #masteringApp .masterTop {order:0;height:auto;min-height:48px;flex-wrap:wrap;padding:8px;gap:5px}
+  #masteringApp .masterTop > div:first-child {flex-wrap:wrap}
+  #masteringApp .masterTop input[type=file] {width:min(100%,280px);max-width:100%;font-size:12px}
+  #masteringApp .masterStatus {max-width:100%;white-space:normal;line-height:1.5}
+  #masteringApp .masterModes {order:1;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+  #masteringApp .masterModes button {min-width:0;min-height:68px;height:auto;padding:29px 4px 7px;font-size:10px;line-height:1.3}
+  #masteringApp .waveBox {order:2;width:100%;height:145px;min-height:145px}
+  #masteringApp .transportOverlay {order:3;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:clamp(2px,1.5vw,12px)!important;justify-items:center!important;align-items:start!important;align-content:center!important;min-height:90px;height:90px;width:100%;padding:10px 5px 20px!important;overflow:visible}
+  #masteringApp .transportOverlay button,
+  #masteringApp .transportOverlay #topPreview,
+  #masteringApp .transportOverlay #topStop {
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+    user-select:none;-webkit-user-select:none;
+    width:48px!important;height:48px!important;min-width:48px!important;
+    min-height:48px!important;max-width:48px!important;
+    position:relative!important;overflow:visible!important;
+    -webkit-appearance:none;appearance:none;box-sizing:border-box!important
+  }
+  #masteringApp .transportOverlay .mobile-transport-label {
+    display:block;position:absolute;top:calc(100% + 5px);left:50%;transform:translateX(-50%);
+    color:#dbe8df;font:700 10px/1.1 Arial,sans-serif!important;
+    white-space:nowrap;letter-spacing:.02em;pointer-events:none
+  }
+  #masteringApp .transportOverlay #topRew::before {
+    content:""!important;inset:14px auto auto 15px!important;
+    width:0!important;height:0!important;border:0!important;
+    border-top:10px solid transparent!important;border-bottom:10px solid transparent!important;
+    border-right:17px solid #fff!important;position:absolute!important
+  }
+  #masteringApp .transportOverlay #topRew::after {
+    content:""!important;display:block!important;position:absolute!important;inset:14px auto auto 10px!important;
+    width:4px!important;height:20px!important;background:#fff!important;border:0!important;border-radius:2px!important
+  }
+  #masteringApp .transportOverlay #topFwd::before {
+    content:""!important;position:absolute!important;inset:14px auto auto 14px!important;
+    width:0!important;height:0!important;border:0!important;
+    border-top:10px solid transparent!important;border-bottom:10px solid transparent!important;
+    border-left:17px solid #fff!important
+  }
+  #masteringApp .transportOverlay #topFwd::after {
+    content:""!important;display:block!important;position:absolute!important;inset:14px 10px auto auto!important;
+    width:4px!important;height:20px!important;background:#fff!important;border:0!important;border-radius:2px!important
+  }
+  #masteringApp .transportOverlay #topPause::before,
+  #masteringApp .transportOverlay #topPause::after {
+    content:""!important;position:absolute!important;top:13px!important;
+    width:6px!important;height:22px!important;background:#fff!important;border:0!important;border-radius:2px!important;
+    margin:0!important
+  }
+  #masteringApp .transportOverlay #topPause::before {inset:13px auto auto 15px!important}
+  #masteringApp .transportOverlay #topPause::after {inset:13px auto auto 27px!important;display:block!important}
+  #masteringApp .transportOverlay #topStop::before {
+    content:""!important;position:absolute!important;inset:14px auto auto 14px!important;
+    width:20px!important;height:20px!important;box-sizing:border-box!important;
+    border:3px solid #fff!important;border-radius:5px!important
+  }
+  #masteringApp .transportOverlay #topStop::after {display:none!important}
+  #masteringApp .transportOverlay #topPreview::before {
+    content:""!important;position:absolute!important;inset:12px auto auto 18px!important;
+    width:0!important;height:0!important;border:0!important;
+    border-top:12px solid transparent!important;border-bottom:12px solid transparent!important;
+    border-left:18px solid #fff!important
+  }
+  #masteringApp .transportOverlay #topPreview::after {display:none!important}
+  #masteringApp .transportOverlay button:focus-visible {outline:2px solid #8df577!important;outline-offset:3px}
+  #masteringApp .eqPanel {order:4;min-height:215px}
+  #masteringApp .vuPair {order:5;height:180px}
+  #masteringApp .masterConsole {order:6;min-height:150px;grid-template-columns:repeat(4,minmax(0,1fr))}
+  #masteringApp .meters {order:7;min-height:125px}
+  #masteringApp .masterActions {order:8;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+  #masteringApp .masterActions button {height:50px;min-width:0}
+  #masteringApp .masterActions #export {grid-column:span 2}
+  #masteringApp .atmosPrep {order:9}
+  #masteringApp .masterNote {order:10}
+}
+@media (max-width: 520px) and (orientation: portrait) and (hover: none) and (pointer: coarse) {
+  #masteringApp .masterModes {grid-template-columns:repeat(2,minmax(0,1fr))}
+  #masteringApp .masterConsole {grid-template-columns:repeat(2,minmax(0,1fr))}
+  #masteringApp .masterConsole .masterControl {min-height:116px}
+  #masteringApp .eqHead {font-size:9px}
+  #masteringApp .eqEditor {grid-template-columns:repeat(2,minmax(0,1fr))}
+  #masteringApp .vuPair {height:130px}
+}
+@media (max-width: 340px) and (orientation: portrait) and (hover: none) and (pointer: coarse) {
+  #masteringApp .transportOverlay {gap:1px!important;padding-left:0!important;padding-right:0!important}
+  #masteringApp .transportOverlay button,#masteringApp .transportOverlay #topPreview,#masteringApp .transportOverlay #topStop {
+    transform:scale(.90);transform-origin:center center;margin:0!important
+  }
+}
+
+/* The Audio-to-MIDI editor's second transport also fits phone portrait screens. */
+@media (max-width: 1024px) and (orientation: portrait) and (hover: none) and (pointer: coarse) {
+  #root, #root main {max-width:100%;min-width:0;box-sizing:border-box}
+  #root main {padding:12px 8px}
+  #root .nnToolbar {max-width:100%;box-sizing:border-box;padding:10px 6px}
+  #root .transportWrap {width:100%;max-width:100%;min-width:0;flex:1 1 100%}
+  #root .customTransport {
+    display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+    width:100%;max-width:100%;gap:clamp(2px,1.5vw,10px);
+    padding:8px 5px;box-sizing:border-box
+  }
+  #root .transportBtn {
+    width:100%;max-width:52px;min-width:0;height:48px;
+    min-height:48px;justify-self:center;padding:0;
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent
+  }
+  #root .nnEditor,#root .panel,#root .rack {min-width:0;max-width:100%}
+  #root .nnRollScroller,#root .rollScroller {overflow-x:auto;-webkit-overflow-scrolling:touch}
+  #root .nnTimeline {min-width:958px}
+}
